@@ -36,16 +36,16 @@ class Program
 
         Console.WriteLine();
 
-        await using var sessionsCommand = dataSource.CreateCommand("SELECT * FROM sessions");
-        await using var sessionsReader = await sessionsCommand.ExecuteReaderAsync();
+        await using var roomsCommand = dataSource.CreateCommand("SELECT * FROM rooms");
+        await using var roomsReader = await roomsCommand.ExecuteReaderAsync();
 
-        Console.WriteLine("[Sessions]");
+        Console.WriteLine("[Rooms]");
 
-        while (await sessionsReader.ReadAsync())
+        while (await roomsReader.ReadAsync())
         {
-            for (int i = 0; i < sessionsReader.FieldCount; ++i)
+            for (int i = 0; i < roomsReader.FieldCount; ++i)
             {
-                Console.Write(sessionsReader[i]?.ToString()?.PadRight(8) + "  ");
+                Console.Write(roomsReader[i]?.ToString()?.PadRight(8) + "  ");
             }
             Console.WriteLine();
         }
@@ -62,7 +62,7 @@ class Program
             created_at timestamp not null default current_timestamp
         );
 
-        create table sessions
+        create table rooms
         (
             game_code varchar(6) primary key,
             is_public boolean not null default TRUE,
@@ -110,7 +110,7 @@ class Program
         for (int i = 1; i <= 5; ++i)
         {
             await using var command = dataSource.CreateCommand(@"
-                INSERT INTO sessions (game_code, is_public, player1_id, player2_id, winner_id, game_started_at, game_ended_at)
+                INSERT INTO rooms (game_code, is_public, player1_id, player2_id, winner_id, game_started_at, game_ended_at)
                 VALUES (@game_code, @is_public, @player1_id, @player2_id, @winner_id, @game_started_at, @game_ended_at);
             ");
 
