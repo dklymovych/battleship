@@ -22,3 +22,9 @@
 ## Аналіз подібних програм
 Найбільш популярними є Sea Battle та Sea Battle 2.
 Недоліки: немає версії для пк, не Open Source рішення.
+
+## Архітектура проекту
+![architecture](https://github.com/dklymovych/battleship/assets/90708440/80ab9f66-fe2b-44dc-a217-770860479485)
+
+## ER діаграма
+![ER-diagram](https://github.com/dklymovych/battleship/assets/90708440/2b7535d2-1608-40e9-925e-62ceaa47995a)
