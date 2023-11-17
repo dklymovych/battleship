@@ -50,7 +50,7 @@
             <!--     <Label Content="Text" Style="{StaticResource lblDesign}" FontSize="50" Background="#303030" Foreground="White"></Label> -->
             <!-- </StackPanel> -->
         </StackPanel>
-        <!-- TODO: Change image path-->
+        <!-- Change image path-->
         <!-- <StackPanel HorizontalAlignment="Center"> -->
         <!--             <Image Source="C:\Users\newme\RiderProjects\battleship\Client\Components/logo.png" Width="300" Height="100"></Image> -->
         <!--             <TextBox -->
