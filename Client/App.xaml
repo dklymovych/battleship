@@ -1,0 +1,47 @@
+﻿<Application x:Class="Client.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Client"
+             xmlns:viewModel="clr-namespace:Client.MVVM.ViewModel"
+             xmlns:view="clr-namespace:Client.MVVM.View">
+    <Application.Resources>
+        
+        <!-- Основний ResourceDictionary -->
+        <ResourceDictionary>
+            <!-- Об'єднання ресурсів Material Design -->
+            <ResourceDictionary.MergedDictionaries>
+                <!-- Material Design ресурси -->
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.DeepPurple.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- DataTemplates -->
+            <DataTemplate DataType="{x:Type viewModel:HomeViewModel}">
+                <view:HomeView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModel:SettingsViewModel}">
+                <view:SettingsView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModel:RegisterViewModel}">
+                <view:RegisterView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModel:LoginViewModel}">
+                <view:LoginView/>
+            </DataTemplate>
+            <!-- Fonts-->
+            <FontFamily x:Key="FontAwesome">/Fonts/fontawesome-webfont.ttf#FontAwesome</FontFamily>
+            <Style x:Key="lblDesign" TargetType="Label">
+                <Setter Property="FontFamily" Value="Resources/Fonts/Black Ops One.ttf #Black Ops One"/>
+            </Style>
+
+            <Style TargetType="Label">
+                <Setter Property="FontSize" Value="35"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="Foreground" Value="DarkGray"/>
+                <Setter Property="FontFamily" Value="Resources/Fonts/Black Ops One.ttf #Black Ops One"/>
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
