@@ -1,0 +1,26 @@
+<UserControl x:Class="Client.MVVM.View.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Client.MVVM.View"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300"
+             Background="#303030">
+    <Grid>
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+            <TextBlock Text="Settings" FontSize="25"></TextBlock>
+            <!-- Це для переходу робиться -->
+            <!-- <Button Content="Home" Command="{Binding NavigateToHomeCommand}"></Button> -->
+            <!-- ~1~ Це для іконок @1@ -->
+            <!-- <fa:FontAwesome Icon="Apple" FontSize="50"></fa:FontAwesome> -->
+            <!-- Це для шрифтів-->
+            <!-- <StackPanel> -->
+            <!-- <Label Content="Text" Style="{StaticResource lblDesign}" FontSize="50" Background="#303030" Foreground="White"></Label> -->
+            <!-- </StackPanel> -->
+            <!-- Це для додавання об'єктів які повині показуватись лише на певних сторінках ( Navbar наприклад) -->
+            <!-- <TextBlock Visibility="{Binding Navigation.CurrentView, Converter={StaticResource VisibilityConverter}, ConverterParameter='Client.MVVM.ViewModel.RatingViewModel, Client.MVVM.ViewModel.LoginViewModel'}">Navbar</TextBlock> -->
+
+        </StackPanel>
+    </Grid>
+</UserControl>

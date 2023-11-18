@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net7.0-windows</TargetFramework>
+        <Nullable>enable</Nullable>
+        <UseWPF>true</UseWPF>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
+      <PackageReference Include="MaterialDesignColors" Version="3.0.0-ci368" />
+      <PackageReference Include="MaterialDesignThemes" Version="5.0.0-ci368" />
+      <PackageReference Include="MaterialDesignThemes.MahApps" Version="3.0.0-ci368" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    </ItemGroup>
+
+
+
+    <ItemGroup>
+      <Folder Include="MVVM\Model\" />
+      <Folder Include="Resources\" />
+    </ItemGroup>
+
+
+
+    <ItemGroup>
+      <None Remove="Fonts\BlackOpsOne-Regular.ttf" />
+    </ItemGroup>
+
+
+
+    <ItemGroup>
+      <None Remove="Resources\Fonts\Black Ops One.ttf" />
+    </ItemGroup>
+
+
+
+
+
+
+    <ItemGroup>
+      <Resource Include="Resources\Fonts\Black Ops One.ttf">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Resource>
+    </ItemGroup>
+
+</Project>
