@@ -10,14 +10,21 @@
              TextElement.Foreground="{DynamicResource MaterialDesignBody}"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d"
-             Height="450" Width="800">
-    <Grid Margin="0 40">
+             Height="570" Width="800">
+    <Grid Margin="0 40" VerticalAlignment="Center">
         <!-- <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center"> -->
         <!--     <TextBlock Text="Home" FontSize="25"></TextBlock> -->
         <!--     <Button Content="Settings" Command="{Binding NavigateToSettingsViewCommand}"></Button> -->
         <!-- </StackPanel> -->
         <StackPanel HorizontalAlignment="Center">
-                    <Image Source="C:\Users\newme\RiderProjects\battleship\Client\Resources/Components/logo.png" Width="300" Height="100"></Image>
+                <Border CornerRadius="5" Background="#383838">
+                    <Label Content="BATTLESHIP" 
+                           Style="{StaticResource lblDesign}" FontSize="43"
+                           HorizontalAlignment="Center" HorizontalContentAlignment="Center"
+                           VerticalAlignment="Center" VerticalContentAlignment="Center"
+                           Foreground="White" Width="300" Height="80"></Label>
+                </Border>
+            <!-- <Image Source="C:\Users\newme\RiderProjects\battleship\Client\Resources/Components/logo.png" Width="300" Height="100"></Image> -->
                     <TextBox
                         Padding="10"
                         materialDesign:HintAssist.Hint="Username"

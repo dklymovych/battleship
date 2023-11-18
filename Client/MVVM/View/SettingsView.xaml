@@ -16,8 +16,11 @@
             <!-- <fa:FontAwesome Icon="Apple" FontSize="50"></fa:FontAwesome> -->
             <!-- Це для шрифтів-->
             <!-- <StackPanel> -->
-            <!--     <Label Content="Text" Style="{StaticResource lblDesign}" FontSize="50" Background="#303030" Foreground="White"></Label> -->
+            <!-- <Label Content="Text" Style="{StaticResource lblDesign}" FontSize="50" Background="#303030" Foreground="White"></Label> -->
             <!-- </StackPanel> -->
+            <!-- Це для додавання об'єктів які повині показуватись лише на певних сторінках ( Navbar наприклад) -->
+            <!-- <TextBlock Visibility="{Binding Navigation.CurrentView, Converter={StaticResource VisibilityConverter}, ConverterParameter='Client.MVVM.ViewModel.RatingViewModel, Client.MVVM.ViewModel.LoginViewModel'}">Navbar</TextBlock> -->
+
         </StackPanel>
     </Grid>
 </UserControl>

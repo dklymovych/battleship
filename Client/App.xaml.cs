@@ -29,6 +29,8 @@ namespace Client
             services.AddSingleton<LoginViewModel>();
             services.AddSingleton<HomeViewModel>();
             services.AddSingleton<SettingsViewModel>();
+            services.AddSingleton<RatingViewModel>();
+            services.AddSingleton<CreateGameViewModel>();
 
             services.AddSingleton<INavigationService, NavigationService>();
             //Делегат

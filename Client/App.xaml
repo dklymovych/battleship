@@ -30,6 +30,12 @@
             <DataTemplate DataType="{x:Type viewModel:LoginViewModel}">
                 <view:LoginView/>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModel:RatingViewModel}">
+                <view:RatingView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModel:CreateGameViewModel}">
+                <view:CreateGameView/>
+            </DataTemplate>
             <!-- Fonts-->
             <FontFamily x:Key="FontAwesome">/Fonts/fontawesome-webfont.ttf#FontAwesome</FontFamily>
             <Style x:Key="lblDesign" TargetType="Label">
