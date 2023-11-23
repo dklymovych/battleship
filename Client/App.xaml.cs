@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
 using Client.Core;
 using Client.MVVM.View;
 using Client.MVVM.ViewModel;
@@ -31,8 +32,12 @@ namespace Client
             services.AddSingleton<SettingsViewModel>();
             services.AddSingleton<RatingViewModel>();
             services.AddSingleton<CreateGameViewModel>();
-
+            services.AddSingleton<JoinGameViewModel>();
+            services.AddSingleton<ShipSelectionViewModel>();
+            services.AddSingleton<IValueConverter, ActiveViewModelConverter>();
+            services.AddSingleton<BooleanToPrivacyTextConverter>();
             services.AddSingleton<INavigationService, NavigationService>();
+            services.AddSingleton<WaitingPageViewModel>();
             //Делегат
             // Працює типу var x = Func
             services.AddSingleton<Func<Type, ViewModel>>(serviceProvider =>

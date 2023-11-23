@@ -1,5 +1,5 @@
+using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -11,10 +11,22 @@ using Client.Services;
 using Newtonsoft.Json;
 
 namespace Client.MVVM.ViewModel;
+public class Ship
+{
+    public List<List<Coordinate>> Cords { get; set; }
+    public int Count => Cords?.Count ?? 0;
+}
 
-public class CreateGameViewModel : Core.ViewModel
+public class Coordinate
+{
+    public int X { get; set; }
+    public int Y { get; set; }
+}
+public class JoinGameViewModel : Core.ViewModel
 {
     public List<Square> Squares { get; set; } = new List<Square>();
+
+
     public Dictionary<string, List<List<Dictionary<string, int>>>> ships =
         new Dictionary<string, List<List<Dictionary<string, int>>>>()
         {
@@ -30,14 +42,12 @@ public class CreateGameViewModel : Core.ViewModel
         { 4, 1 }
     };
     
-
-    
     private INavigationService _navigation;
     
-    private Dictionary<string, Ship> LoadShipsFromJson()
+    private Dictionary<string, List<List<Coordinate>>> LoadShipsFromJson()
     {
-        var json = File.ReadAllText("C:/Users/newme/RiderProjects/battleship/Client/Resources/ships.json");
-        return JsonConvert.DeserializeObject<Dictionary<string, Ship>>(json);
+        var json = File.ReadAllText("C:/Users/newme/RiderProjects/battleship/Client/Resources/shipsGot.json");
+        return JsonConvert.DeserializeObject<Dictionary<string, List<List<Coordinate>>>>(json);
     }
     
     public INavigationService Navigation
@@ -63,6 +73,21 @@ public class CreateGameViewModel : Core.ViewModel
     }
     public void SquareClick(Square square)
     {
+       
+        // var ships = LoadShipsFromJson();
+        // foreach (var ship in ships)
+        // {
+        //     foreach (var cordList in ship.Value)
+        //     {
+        //         foreach (var coordinate in cordList)
+        //         {
+        //             int temp = coordinate.X + coordinate.Y*10;
+        //             Squares[temp].isShip = true;
+        //             Squares[temp].isCloseToShip = true;
+        //             Squares[temp].ChangeColor();
+        //         }
+        //     }
+        // }
         var shipSelectionWindow = new ShipSelectionView(_shipLengthsAvailable);
         if (shipSelectionWindow.ShowDialog() == true)
         {
@@ -234,64 +259,35 @@ public class CreateGameViewModel : Core.ViewModel
             ship.Value.Clear();
         }
     }
-    
+
     public RelayCommand NavigateToHomeCommand { get; set; }
     public ICommand OkCommand { get; private set; }
 
-    private bool OnOk()
+    private void OnOk()
     {
         if (_shipLengthsAvailable.Any(kv => kv.Value > 0))
         {
             MessageBox.Show("Please place all ships in board!", "Alert", MessageBoxButton.OK);
-            return false;
-        }
-
-        return true;
-        // Add additional logic for what happens when all ships are placed
-    }
-    
-    public RelayCommand NavigateToSettingsViewCommand { get; set; }
-    
-    public RelayCommand NavigateToRatingViewCommand { get; set; }
-    public RelayCommand NavigateToCreateGameViewCommand { get; set; }
-
-    private bool _isPrivate;
-    public bool IsPrivate
-    {
-        get => _isPrivate;
-        set
-        {
-            _isPrivate = value;
-            OnPropertyChanged();
+            return;
         }
     }
-    public ICommand TogglePrivacyCommand { get; private set; }
-    private void TogglePrivacy()
-    {
-        IsPrivate = !IsPrivate;
-    }
+
     public ICommand ConvertToJsonCommand { get; private set; }
 
     private void SerializeJson()
     {
-        Navigation.NavigateTo<WaitingPageViewModel>();
-        // if( OnOk())
-        // {
-        //     File.WriteAllText("C:/Users/newme/RiderProjects/battleship/Client/Resources/shipsGot.json", JsonConvert.SerializeObject(ships, Formatting.Indented));
-        //     Navigation.NavigateTo<WaitingPageViewModel>();
-        // }
+        OnOk();
+        File.WriteAllText("C:/Users/newme/RiderProjects/battleship/Client/Resources/shipsGot.json", JsonConvert.SerializeObject(ships, Formatting.Indented));
     }
-
-    public CreateGameViewModel(INavigationService navService)
+    
+    public JoinGameViewModel(INavigationService navigation)
     {
-        Navigation = navService;
+        Navigation = navigation;
         InitializeSquares();
         ClearBoardCommand = new RelayCommand(o => ClearBoard(), canExecute:o => true);
         SquareClickCommand = new RelayCommand(o=>{SquareClick(o as Square);}, canExecute:o=> true);
         OkCommand = new RelayCommand(o => OnOk(), o => true);
         NavigateToHomeCommand = new RelayCommand(o => { Navigation.NavigateTo<HomeViewModel>();}, canExecute:o => true );
-        IsPrivate = true; // Default value
-        TogglePrivacyCommand = new RelayCommand(o => TogglePrivacy(), o => true);
         ConvertToJsonCommand =  new RelayCommand(o => SerializeJson(), o => true);
     }
 }
