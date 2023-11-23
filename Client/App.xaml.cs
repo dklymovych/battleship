@@ -37,6 +37,7 @@ namespace Client
             services.AddSingleton<IValueConverter, ActiveViewModelConverter>();
             services.AddSingleton<BooleanToPrivacyTextConverter>();
             services.AddSingleton<INavigationService, NavigationService>();
+            services.AddSingleton<WaitingPageViewModel>();
             //Делегат
             // Працює типу var x = Func
             services.AddSingleton<Func<Type, ViewModel>>(serviceProvider =>

@@ -238,14 +238,15 @@ public class CreateGameViewModel : Core.ViewModel
     public RelayCommand NavigateToHomeCommand { get; set; }
     public ICommand OkCommand { get; private set; }
 
-    private void OnOk()
+    private bool OnOk()
     {
         if (_shipLengthsAvailable.Any(kv => kv.Value > 0))
         {
             MessageBox.Show("Please place all ships in board!", "Alert", MessageBoxButton.OK);
-            return;
+            return false;
         }
 
+        return true;
         // Add additional logic for what happens when all ships are placed
     }
     
@@ -273,8 +274,12 @@ public class CreateGameViewModel : Core.ViewModel
 
     private void SerializeJson()
     {
-        OnOk();
-        File.WriteAllText("C:/Users/newme/RiderProjects/battleship/Client/Resources/shipsGot.json", JsonConvert.SerializeObject(ships, Formatting.Indented));
+        Navigation.NavigateTo<WaitingPageViewModel>();
+        // if( OnOk())
+        // {
+        //     File.WriteAllText("C:/Users/newme/RiderProjects/battleship/Client/Resources/shipsGot.json", JsonConvert.SerializeObject(ships, Formatting.Indented));
+        //     Navigation.NavigateTo<WaitingPageViewModel>();
+        // }
     }
 
     public CreateGameViewModel(INavigationService navService)
