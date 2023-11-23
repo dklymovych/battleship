@@ -18,6 +18,7 @@ public class RegisterViewModel : Core.ViewModel
     }
     public RelayCommand NavigateToSettingsViewCommand { get; set; }
     public RelayCommand NavigateToLoginViewCommand { get; set; }
+    public RelayCommand NavigateToRegisterViewCommand { get; set; }
     public RegisterViewModel(INavigationService navigation)
     {
         Navigation = navigation;

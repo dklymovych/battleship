@@ -26,6 +26,7 @@
                 </Border>
             <!-- <Image Source="C:\Users\newme\RiderProjects\battleship\Client\Resources/Components/logo.png" Width="300" Height="100"></Image> -->
                     <TextBox
+                        x:Name="UsernameTextBox"
                         Padding="10"
                         materialDesign:HintAssist.Hint="Username"
                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
@@ -35,6 +36,7 @@
                     >
                     </TextBox>
                     <PasswordBox
+                        x:Name="PasswordTextBox"
                         HorizontalAlignment="Stretch"
                         HorizontalContentAlignment="Left"
                         Padding="10"
@@ -49,6 +51,7 @@
                     >
                     </PasswordBox>
                     <PasswordBox
+                        x:Name="ConfirmPasswordTextBox"
                         HorizontalAlignment="Stretch"
                         HorizontalContentAlignment="Left"
                         Padding="10"
@@ -70,6 +73,7 @@
                         BorderThickness="0"
                         Margin="5 20 5  0"
                         Command="{Binding NavigateToLoginViewCommand}"
+                        Click="Button_Click"
                         >
                     </Button>
                     

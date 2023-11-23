@@ -1,5 +1,6 @@
 using Client.Core;
 using Client.Services;
+using System.Runtime.CompilerServices;
 
 namespace Client.MVVM.ViewModel;
 
