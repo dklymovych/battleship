@@ -22,9 +22,21 @@
         >
     <Window.Resources>
         <conv:VisibilityConverter x:Key="VisibilityConverter"/>
+        <conv:ActiveViewModelConverter x:Key="ActiveViewModelConverter"/>
+        <conv:BackgroundColorConverter x:Key="BackgroundColorConverter"/>
+        <Style x:Key="RatingButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#696969"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Navigation.CurrentView, Converter={StaticResource ActiveViewModelConverter}, ConverterParameter='Client.MVVM.ViewModel.RatingViewModel'}" Value="True">
+                    <Setter Property="Background" Value="#101010"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        
     </Window.Resources>
-   
+    
     <Border Background="WhiteSmoke" CornerRadius="10" BorderThickness="0">
+        
         <Grid>
             
             <Grid.RowDefinitions>
@@ -62,7 +74,7 @@
             <!-- Контент з View (Коли немає Navbar i BattleShip панелі) -->
             <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
                     Visibility="{Binding Navigation.CurrentView, Converter={StaticResource VisibilityConverter},
-                     ConverterParameter='Client.MVVM.ViewModel.HomeViewModel, Client.MVVM.ViewModel.RegisterViewModel,Client.MVVM.ViewModel.LoginViewModel'}">
+                     ConverterParameter='Client.MVVM.ViewModel.HomeViewModel, Client.MVVM.ViewModel.RegisterViewModel,Client.MVVM.ViewModel.LoginViewModel, Client.MVVM.ViewModel.WaitingPageViewModel'}">
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" >
                     <ContentControl Content="{Binding Navigation.CurrentView}">
                     </ContentControl>
@@ -72,7 +84,7 @@
             <!-- Панель з надписом Battleship (Немає в Home,Register,Login) -->
             <StackPanel Grid.Row="1" Grid.ColumnSpan="2"
                         Visibility="{Binding Navigation.CurrentView, Converter={StaticResource VisibilityConverter}, 
-                        ConverterParameter='Client.MVVM.ViewModel.RatingViewModel, Client.MVVM.ViewModel.CreateGameViewModel'}">
+                        ConverterParameter='Client.MVVM.ViewModel.RatingViewModel, Client.MVVM.ViewModel.CreateGameViewModel,Client.MVVM.ViewModel.JoinGameViewModel'}">
                 <Label VerticalAlignment="Top" HorizontalContentAlignment="Left" 
                        VerticalContentAlignment="Center" Padding="30 0 0 0" Content="BATTLESHIP"
                        Height="80"
@@ -83,7 +95,7 @@
             <!-- Основний контент справа від Navbar коли він присутній-->
             <Border Grid.Row="2" Grid.Column="1"
                     Visibility="{Binding Navigation.CurrentView, Converter={StaticResource VisibilityConverter},
-                     ConverterParameter='Client.MVVM.ViewModel.RatingViewModel, Client.MVVM.ViewModel.CreateGameViewModel'}">
+                     ConverterParameter='Client.MVVM.ViewModel.RatingViewModel, Client.MVVM.ViewModel.CreateGameViewModel,Client.MVVM.ViewModel.JoinGameViewModel'}">
                 <!-- ContentControl для основного контенту -->
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                     <ContentControl Content="{Binding Navigation.CurrentView}">
@@ -94,25 +106,27 @@
             <!-- NavBar який не присутній в HomeView,Register,Login  -->
             <Border Grid.Row="2" Grid.Column="0" CornerRadius="0 0 10 10" Background="#D9D9D9"
                     Visibility="{Binding Navigation.CurrentView, Converter={StaticResource VisibilityConverter}, 
-                        ConverterParameter='Client.MVVM.ViewModel.RatingViewModel, Client.MVVM.ViewModel.CreateGameViewModel'}">
+                        ConverterParameter='Client.MVVM.ViewModel.RatingViewModel, Client.MVVM.ViewModel.CreateGameViewModel,Client.MVVM.ViewModel.JoinGameViewModel'}">
                 <StackPanel HorizontalAlignment="Left" Height="570"  Width="200">
                     <StackPanel>
                         <Button  Width="170" Height="40" Margin="0 40 0 20"
-                                Background="#696969"
-                                BorderThickness="2"
-                                BorderBrush="#404040"
-                                >
+                                 Background="{Binding Navigation.CurrentView, Converter={StaticResource BackgroundColorConverter}, ConverterParameter='Client.MVVM.ViewModel.RatingViewModel'}"
+                                 BorderThickness="2"
+                                 BorderBrush="#404040"
+                                 Command="{Binding NavigateToRatingViewCommand}"
+                        >
                             <Label Content="Rating" Style="{StaticResource lblDesign}" FontSize="18"  Foreground="White"></Label>
                         </Button>
                         <Button  Width="170" Height="40" Margin="0 20 0 20"
-                                 Background="#696969"
+                                 Background="{Binding Navigation.CurrentView, Converter={StaticResource BackgroundColorConverter}, ConverterParameter='Client.MVVM.ViewModel.JoinGameViewModel'}"
                                  BorderThickness="2"
                                  BorderBrush="#404040"
+                                 Command="{Binding NavigateToJoinGameViewCommand}"
                         >
                             <Label Content="Join Game" Style="{StaticResource lblDesign}" FontSize="18"  Foreground="White"></Label>
                         </Button>
                         <Button  Width="170" Height="40" Margin="0 20 0 20"
-                                 Background="#696969"
+                                 Background="{Binding Navigation.CurrentView, Converter={StaticResource BackgroundColorConverter}, ConverterParameter='Client.MVVM.ViewModel.CreateGameViewModel'}"
                                  BorderThickness="2"
                                  BorderBrush="#404040"
                                  Command="{Binding NavigateToCreateGameViewCommand}"

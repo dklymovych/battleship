@@ -23,6 +23,8 @@ public class MainViewModel: Core.ViewModel
     
     public RelayCommand NavigateToRatingViewCommand { get; set; }
     public RelayCommand NavigateToCreateGameViewCommand { get; set; }
+    public RelayCommand NavigateToJoinGameViewCommand { get; set; }
+
 
 
 
@@ -34,6 +36,7 @@ public class MainViewModel: Core.ViewModel
         NavigateToSettingsViewCommand = new RelayCommand(o => { Navigation.NavigateTo<SettingsViewModel>();}, canExecute:o => true );
         NavigateToRatingViewCommand = new RelayCommand(o => { Navigation.NavigateTo<RatingViewModel>();}, canExecute:o => true );
         NavigateToCreateGameViewCommand = new RelayCommand(o => { Navigation.NavigateTo<CreateGameViewModel>();}, canExecute:o => true );
+        NavigateToJoinGameViewCommand = new RelayCommand(o => { Navigation.NavigateTo<JoinGameViewModel>();}, canExecute:o => true );
 
 
     }

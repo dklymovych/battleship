@@ -12,7 +12,43 @@
                <Label VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Background="#D9D9D9" Width="450" Height="70"
                       Content="Scoreboard" Style="{StaticResource lblDesign}" FontSize="38"  Foreground="#404040"></Label>
            </StackPanel>
-           <StackPanel VerticalAlignment="Top"  Margin="0 20 0 0"  Background="#D9D9D9" Width="450" Height="300">
+           <StackPanel VerticalAlignment="Top"  Margin="0 20 0 0"  Background="#D9D9D9" Width="450" Height="300" CanVerticallyScroll="True">
+               <ScrollViewer VerticalScrollBarVisibility="Auto"  Width="450" Height="300" Margin="5 0 5 0">
+                   <TextBlock TextWrapping="Wrap" Margin="15 20">Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+                   Nam varius metus sit amet tellus pretium malesuada.
+                   Phasellus imperdiet nisi eget tortor tempor molestie eu non nisl.
+                   Nulla vel elit a diam accumsan luctus.
+                   Aenean sollicitudin velit quis tempus bibendum.
+                   Curabitur scelerisque leo eget mauris dignissim tincidunt.
+                   Integer eget nisl feugiat, facilisis justo nec, placerat massa.
+                   Maecenas quis turpis fermentum, auctor turpis a, mattis magna.
+                   Integer viverra nulla quis nibh consequat, non iaculis nisi sagittis.
+                   Nunc nec metus in nisi ullamcorper imperdiet vitae vitae augue.
+                   Pellentesque blandit erat non diam rutrum luctus.
+                   Etiam venenatis dolor nec felis sagittis, in finibus mauris interdum.
+                   Aenean vel nisi sit amet libero efficitur viverra.
+                   Donec non est convallis, porttitor leo vel, egestas elit.
+                   Ut ut magna ac est semper porta.
+                   Suspendisse nec ligula consequat, commodo velit quis, commodo metus.
+                   Proin ut odio tristique, malesuada lacus et, eleifend nisi.
+                   Nam varius metus sit amet tellus pretium malesuada.
+                   Phasellus imperdiet nisi eget tortor tempor molestie eu non nisl.
+                   Nulla vel elit a diam accumsan luctus.
+                   Aenean sollicitudin velit quis tempus bibendum.
+                   Curabitur scelerisque leo eget mauris dignissim tincidunt.
+                   Integer eget nisl feugiat, facilisis justo nec, placerat massa.
+                   Maecenas quis turpis fermentum, auctor turpis a, mattis magna.
+                   Integer viverra nulla quis nibh consequat, non iaculis nisi sagittis.
+                   Nunc nec metus in nisi ullamcorper imperdiet vitae vitae augue.
+                   Pellentesque blandit erat non diam rutrum luctus.
+                   Etiam venenatis dolor nec felis sagittis, in finibus mauris interdum.
+                   Aenean vel nisi sit amet libero efficitur viverra.
+                   Donec non est convallis, porttitor leo vel, egestas elit.
+                   Ut ut magna ac est semper porta.
+                   Suspendisse nec ligula consequat, commodo velit quis, commodo metus.
+                   Proin ut odio tristique, malesuada lacus et, eleifend nisi
+               </TextBlock>
+               </ScrollViewer>
            </StackPanel>
        </StackPanel>
         <!-- <StackPanel> -->

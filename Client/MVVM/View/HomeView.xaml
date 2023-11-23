@@ -41,10 +41,10 @@
             <Button
                 IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
                 Height="40"
-                Background="#696969"
+                Background="#888888"
                 Width="250"
                 FontSize="20"
-                BorderBrush="#404040"
+                BorderBrush="#505050"
                 BorderThickness="2"
                 Margin="5 20 5  0"
                 Command="{Binding NavigateToRegisterViewCommand}"
@@ -56,9 +56,9 @@
             </Button>
             <Button
                 IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
-                Background="#696969"
+                Background="#888888"
                 BorderThickness="2"
-                BorderBrush="#404040"
+                BorderBrush="#505050"
                 Height="40"
                 Width="250"
                 FontSize="20"

@@ -22,6 +22,7 @@ public class LoginViewModel : Core.ViewModel
 
     public LoginViewModel(INavigationService navigation)
     {
+        
         Navigation = navigation;
         //NavigateToLoginViewCommand = new RelayCommand(o =>{Navigation.NavigateTo<LoginViewModel>();}, canExecute:o => true)
         NavigateToHomeCommand = new RelayCommand(o => { Navigation.NavigateTo<HomeViewModel>();}, canExecute:o => true );
