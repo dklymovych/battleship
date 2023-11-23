@@ -68,7 +68,42 @@ public class GameController : ControllerBase
         room.ShipsPosition2 = JsonSerializer.Deserialize<ShipsPosition>(joinRoomDto.ShipsPosition)!;
 
         _context.SaveChanges();
-        return Ok();
+
+        PlayerNamesDto playerNames = new PlayerNamesDto
+        {
+            Player1Name = room.Player1.Username,
+            Player2Name = room.Player2.Username
+        };
+
+        return Ok(playerNames);
+    }
+
+    [HttpGet("WaitForGame/{gameCode}")]
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public ActionResult WaitForGame([FromRoute] string gameCode)
+    {
+        Room? room = FindRoom(gameCode);
+
+        if (room == null)
+            return NotFound();
+
+        if (room.Player1 != _currentPlayer)
+            return BadRequest();
+
+        if (room.Player2 == null)
+            return NoContent();
+
+        PlayerNamesDto playerNames = new PlayerNamesDto
+        {
+            Player1Name = room.Player1.Username,
+            Player2Name = room.Player2.Username
+        };
+
+        return Ok(playerNames);
     }
 
     private Room? FindRoom(string gameCode)
@@ -84,7 +119,7 @@ public class GameController : ControllerBase
         _context.Players.FirstOrDefault(p => p.Username == User.FindFirstValue(ClaimTypes.Name))!
     );
 
-    private string GenerateGameCode()
+    private static string GenerateGameCode()
     {
         const int GAME_CODE_LENGTH = 6;
 
