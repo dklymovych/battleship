@@ -7,6 +7,7 @@ using System.Security.Claims;
 using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
 
 namespace Server.Controllers;
 
@@ -32,7 +33,7 @@ public class GameController : ControllerBase
     {
         Room room = new Room
         {
-            GameCode = createRoomDto.GameCode,
+            GameCode = GenerateGameCode(),
             IsPublic = createRoomDto.IsPublic,
             Player1 = _currentPlayer,
             ShipsPosition1 = JsonSerializer.Deserialize<ShipsPosition>(createRoomDto.ShipsPosition)!
@@ -41,7 +42,7 @@ public class GameController : ControllerBase
         _context.Add(room);
         _context.SaveChanges();
 
-        return StatusCode(StatusCodes.Status201Created);
+        return StatusCode(StatusCodes.Status201Created, new { GameCode = room.GameCode });
     }
 
     [HttpPut("JoinRoom/{gameCode}")]
@@ -70,7 +71,8 @@ public class GameController : ControllerBase
         return Ok();
     }
 
-    private Room? FindRoom(string gameCode) {
+    private Room? FindRoom(string gameCode)
+    {
         return _context.Rooms
             .Include(r => r.Player1)
             .Include(r => r.Player2)
@@ -81,4 +83,20 @@ public class GameController : ControllerBase
     private Player _currentPlayer => (
         _context.Players.FirstOrDefault(p => p.Username == User.FindFirstValue(ClaimTypes.Name))!
     );
+
+    private string GenerateGameCode()
+    {
+        const int GAME_CODE_LENGTH = 6;
+
+        StringBuilder gameCode = new StringBuilder();
+        Random random = new Random();
+
+        for (int i = 0; i < GAME_CODE_LENGTH; ++i)
+        {
+            int ch = random.Next(0, 2) == 1 ? random.Next(48, 58) : random.Next(65, 91);
+            gameCode.Append(Convert.ToChar(ch));
+        }
+
+        return gameCode.ToString();
+    }
 }
