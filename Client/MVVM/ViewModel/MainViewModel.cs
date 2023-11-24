@@ -33,7 +33,8 @@ public class MainViewModel: Core.ViewModel
 
     private void Logout()
     {
-        Globals.LogginInUser.access_token = "";
+        // Globals.LogginInUser.access_token = "";
+        Globals.LogginInUser.Logout();
         NavigateToHomeCommand = new RelayCommand(o => { Navigation.NavigateTo<HomeViewModel>();}, canExecute:o => true );
     }
 
