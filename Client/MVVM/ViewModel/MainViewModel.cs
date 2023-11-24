@@ -1,5 +1,7 @@
 using System;
+using System.Windows.Input;
 using Client.Core;
+using Client.MVVM.Model;
 using Client.Services;
 
 namespace Client.MVVM.ViewModel;
@@ -7,6 +9,7 @@ namespace Client.MVVM.ViewModel;
 public class MainViewModel: Core.ViewModel
 {
     private INavigationService _navigation;
+   
     
     public INavigationService Navigation
     {
@@ -26,7 +29,13 @@ public class MainViewModel: Core.ViewModel
     public RelayCommand NavigateToJoinGameViewCommand { get; set; }
 
 
+    public ICommand LogOut { get; set; }
 
+    private void Logout()
+    {
+        Globals.LogginInUser.access_token = "";
+        NavigateToHomeCommand = new RelayCommand(o => { Navigation.NavigateTo<HomeViewModel>();}, canExecute:o => true );
+    }
 
     public MainViewModel(INavigationService navService)
     {
@@ -37,7 +46,7 @@ public class MainViewModel: Core.ViewModel
         NavigateToRatingViewCommand = new RelayCommand(o => { Navigation.NavigateTo<RatingViewModel>();}, canExecute:o => true );
         NavigateToCreateGameViewCommand = new RelayCommand(o => { Navigation.NavigateTo<CreateGameViewModel>();}, canExecute:o => true );
         NavigateToJoinGameViewCommand = new RelayCommand(o => { Navigation.NavigateTo<JoinGameViewModel>();}, canExecute:o => true );
-
+        LogOut = new RelayCommand(o => { Logout();}, canExecute:o => true );
 
     }
 }

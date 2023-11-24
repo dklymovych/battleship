@@ -274,12 +274,11 @@ public class CreateGameViewModel : Core.ViewModel
 
     private void SerializeJson()
     {
-        Navigation.NavigateTo<WaitingPageViewModel>();
-        // if( OnOk())
-        // {
-        //     File.WriteAllText("C:/Users/newme/RiderProjects/battleship/Client/Resources/shipsGot.json", JsonConvert.SerializeObject(ships, Formatting.Indented));
-        //     Navigation.NavigateTo<WaitingPageViewModel>();
-        // }
+        if( OnOk())
+        {
+            File.WriteAllText("C:/Users/newme/RiderProjects/battleship/Client/Resources/shipsGot.json", JsonConvert.SerializeObject(ships, Formatting.Indented));
+            Navigation.NavigateTo<WaitingPageViewModel>();
+        }
     }
 
     public CreateGameViewModel(INavigationService navService)
