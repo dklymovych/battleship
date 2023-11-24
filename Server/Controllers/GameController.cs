@@ -106,6 +106,30 @@ public class GameController : ControllerBase
         return Ok(playerNames);
     }
 
+    [HttpDelete("WaitForGame/{gameCode}")]
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public ActionResult CancelWaitForGame([FromRoute] string gameCode)
+    {
+        Room? room = FindRoom(gameCode);
+
+        if (room == null)
+            return NotFound();
+
+        if (room.Player1 != _currentPlayer)
+            return BadRequest();
+
+        if (room.Player2 != null)
+            return BadRequest();
+
+        _context.Rooms.Remove(room);
+        _context.SaveChanges();        
+
+        return Ok();
+    }
+
     private Room? FindRoom(string gameCode)
     {
         return _context.Rooms
