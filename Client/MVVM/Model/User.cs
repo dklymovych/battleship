@@ -15,6 +15,10 @@ class User
         access_token = accessToken;
     }
 
+    public void Logout()
+    {
+        access_token = "";
+    }
     public override string ToString()
     {
         return access_token;

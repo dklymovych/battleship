@@ -8,4 +8,5 @@ namespace Client.MVVM.Model;
 class Globals
 {
     public static User LogginInUser { get; set; }
+    public static string GameCode { get; set; }
 }

@@ -65,12 +65,13 @@
             </Button>
             <TextBox materialDesign:HintAssist.Hint="Code : XXXXXX" Foreground="#404040" TextAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
                      BorderThickness="1" BorderBrush="#404040 "  Width="120" Height="40"
+                     Text="{Binding GameCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      MaxLength="6"
                      materialDesign:TextFieldAssist.CharacterCounterVisibility="Hidden"
                      >
             </TextBox>
             <Button Background="#D9D9D9" BorderThickness="1" BorderBrush="#404040 " Width="80" Height="40" Margin="70 10 0 10"
-                    Command="{Binding OkCommand}">
+                    Command="{Binding JoinGameCommand}">
                 <Label Content="OK" Style="{StaticResource lblDesign}" FontSize="18"  Foreground="#404040"></Label>
             </Button>
         </StackPanel>

@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Windows;
 using System.Windows.Input;
 using Client.Core;
@@ -9,6 +12,7 @@ using Client.MVVM.Model;
 using Client.MVVM.View;
 using Client.Services;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Client.MVVM.ViewModel;
 public class Ship
@@ -24,14 +28,25 @@ public class Coordinate
 }
 public class JoinGameViewModel : Core.ViewModel
 {
+    private string _gameCode;
+
+    public string GameCode
+    {
+        get => _gameCode;
+        set
+        {
+            _gameCode = value;
+            OnPropertyChanged("GameCode");
+        }
+    }
     public List<Square> Squares { get; set; } = new List<Square>();
 
 
     public Dictionary<string, List<List<Dictionary<string, int>>>> ships =
         new Dictionary<string, List<List<Dictionary<string, int>>>>()
         {
-            {"1", new List<List<Dictionary<string, int>>>()}, {"2", new List<List<Dictionary<string, int>>>()}, 
-            {"3", new List<List<Dictionary<string, int>>>()}, {"4", new List<List<Dictionary<string, int>>>()}
+            {"4", new List<List<Dictionary<string, int>>>()}, {"3", new List<List<Dictionary<string, int>>>()}, 
+            {"2", new List<List<Dictionary<string, int>>>()}, {"1", new List<List<Dictionary<string, int>>>()}
         };
     
     private Dictionary<int, int> _shipLengthsAvailable = new Dictionary<int, int>
@@ -117,8 +132,8 @@ public class JoinGameViewModel : Core.ViewModel
         {
             MarkShipAndAdjacent(startSquare.X, startSquare.Y);
             Dictionary<string, int> temp2 = new Dictionary<string, int>();
-            temp2.Add("x",startSquare.X);
-            temp2.Add("y",startSquare.Y);
+            temp2.Add("X",startSquare.X);
+            temp2.Add("Y",startSquare.Y);
             temp.Add(temp2);
         }
         else if (orientation == "Horizontal")
@@ -127,8 +142,8 @@ public class JoinGameViewModel : Core.ViewModel
             {
                 MarkShipAndAdjacent(startSquare.X + i, startSquare.Y);
                 Dictionary<string, int> temp2 = new Dictionary<string, int>();
-                temp2.Add("x",startSquare.X + i);
-                temp2.Add("y",startSquare.Y);
+                temp2.Add("X",startSquare.X + i);
+                temp2.Add("Y",startSquare.Y);
                 temp.Add(temp2);
             }
         }
@@ -138,8 +153,8 @@ public class JoinGameViewModel : Core.ViewModel
             {
                 MarkShipAndAdjacent(startSquare.X, startSquare.Y + i);
                 Dictionary<string, int> temp2 = new Dictionary<string, int>();
-                temp2.Add("x",startSquare.X);
-                temp2.Add("y",startSquare.Y + i);
+                temp2.Add("X",startSquare.X);
+                temp2.Add("Y",startSquare.Y + i);
                 temp.Add(temp2);
             }
         }
@@ -263,21 +278,73 @@ public class JoinGameViewModel : Core.ViewModel
     public RelayCommand NavigateToHomeCommand { get; set; }
     public ICommand OkCommand { get; private set; }
 
-    private void OnOk()
+    private  bool OnOk()
     {
         if (_shipLengthsAvailable.Any(kv => kv.Value > 0))
         {
             MessageBox.Show("Please place all ships in board!", "Alert", MessageBoxButton.OK);
-            return;
+            return false;
         }
+
+        return true;
     }
 
     public ICommand ConvertToJsonCommand { get; private set; }
+    public ICommand JoinGameCommand { get; private set; }
 
-    private void SerializeJson()
+    private async void JoinGame()
     {
-        OnOk();
-        File.WriteAllText("C:/Users/newme/RiderProjects/battleship/Client/Resources/shipsGot.json", JsonConvert.SerializeObject(ships, Formatting.Indented));
+        if (OnOk())
+        {
+            if (GameCode != "")
+            {
+                using (HttpClient httpClient = new HttpClient())
+                {
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",Globals.LogginInUser.access_token);
+                    string apiUrl = "http://localhost:5199";  // This needs to be in file config
+
+                    var postData = new { shipsPosition = ships }; 
+
+                    string jsonData = Newtonsoft.Json.JsonConvert.SerializeObject(postData);
+                    var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+                    HttpResponseMessage responsePost = await httpClient.PutAsync($"{apiUrl}/api/Game/JoinRoom/{GameCode}", content);
+
+                    if (responsePost.IsSuccessStatusCode)
+                    {
+                        //Globals.GameCode = GameCode;
+                        //MessageBox.Show($"Success");
+                        Navigation.NavigateTo<RatingViewModel>(); //this need to be in future a battle form
+                    }
+                    else
+                    {
+                        if ((int)responsePost.StatusCode == 400 )
+                        {
+                            MessageBox.Show("BAD REQUEST", "Alert");
+                        }
+                        else  if ((int)responsePost.StatusCode == 404 )
+                        {
+                            MessageBox.Show("THERE IS NO SUCH ROOM", "Warning");
+                        }
+                        else if ((int)responsePost.StatusCode == 401)
+                        {
+                            Globals.LogginInUser.Logout();
+                            Navigation.NavigateTo<HomeViewModel>();
+                        }
+                        else
+                        {
+                            MessageBox.Show($"{responsePost.StatusCode} {(int)responsePost.StatusCode}");
+                        }
+                       
+                    }
+           
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please enter game code!", "Alert", MessageBoxButton.OK);
+            }
+        }
     }
     
     public JoinGameViewModel(INavigationService navigation)
@@ -287,7 +354,9 @@ public class JoinGameViewModel : Core.ViewModel
         ClearBoardCommand = new RelayCommand(o => ClearBoard(), canExecute:o => true);
         SquareClickCommand = new RelayCommand(o=>{SquareClick(o as Square);}, canExecute:o=> true);
         OkCommand = new RelayCommand(o => OnOk(), o => true);
+        JoinGameCommand = new RelayCommand(o => JoinGame(), o => true);
+
         NavigateToHomeCommand = new RelayCommand(o => { Navigation.NavigateTo<HomeViewModel>();}, canExecute:o => true );
-        ConvertToJsonCommand =  new RelayCommand(o => SerializeJson(), o => true);
+        // ConvertToJsonCommand =  new RelayCommand(o => SerializeJson(), o => true);
     }
 }
