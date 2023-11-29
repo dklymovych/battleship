@@ -19,6 +19,8 @@ using ShipsPosition = Dictionary<string, List<List<Coordinate>>>;
 public class GameController : ControllerBase
 {
     private readonly DataContext _context;
+    private const int FIELD_SIZE = 10; 
+    private enum FieldCellType { Empty, Miss, Attacked, Ship }
 
     public GameController(DataContext context)
     {
@@ -31,7 +33,7 @@ public class GameController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public ActionResult CreateRoom([FromBody] CreateRoomDto createRoomDto)
     {
-        Room room = new Room
+        Room room = new()
         {
             GameCode = GenerateGameCode(),
             IsPublic = createRoomDto.IsPublic,
@@ -69,13 +71,15 @@ public class GameController : ControllerBase
 
         _context.SaveChanges();
 
-        PlayerNamesDto playerNames = new PlayerNamesDto
+        StartGameDto startGame = new()
         {
             Player1Name = room.Player1.Username,
-            Player2Name = room.Player2.Username
+            Player2Name = room.Player2.Username,
+            MakeMove = false,
+            Battlefield = BuildBattlefield(room.ShipsPosition2) 
         };
 
-        return Ok(playerNames);
+        return Ok(startGame);
     }
 
     [HttpGet("WaitForGame/{gameCode}")]
@@ -97,13 +101,15 @@ public class GameController : ControllerBase
         if (room.Player2 == null)
             return NoContent();
 
-        PlayerNamesDto playerNames = new PlayerNamesDto
+        StartGameDto startGame = new()
         {
             Player1Name = room.Player1.Username,
-            Player2Name = room.Player2.Username
+            Player2Name = room.Player2.Username,
+            MakeMove = true,
+            Battlefield = BuildBattlefield(room.ShipsPosition1)
         };
 
-        return Ok(playerNames);
+        return Ok(startGame);
     }
 
     [HttpDelete("WaitForGame/{gameCode}")]
@@ -147,8 +153,8 @@ public class GameController : ControllerBase
     {
         const int GAME_CODE_LENGTH = 6;
 
-        StringBuilder gameCode = new StringBuilder();
-        Random random = new Random();
+        StringBuilder gameCode = new();
+        Random random = new();
 
         for (int i = 0; i < GAME_CODE_LENGTH; ++i)
         {
@@ -157,5 +163,23 @@ public class GameController : ControllerBase
         }
 
         return gameCode.ToString();
+    }
+
+    private static int[] BuildBattlefield(ShipsPosition shipsPosition)
+    {
+        int[] battlefield = new int[FIELD_SIZE * FIELD_SIZE];
+
+        foreach (var (key, ships) in shipsPosition)
+        {
+            foreach (var ship in ships)
+            {
+                foreach (var coordinate in ship)
+                {
+                    battlefield[coordinate.Y * FIELD_SIZE + coordinate.X] = (int)FieldCellType.Ship;
+                }
+            }
+        }  
+
+        return battlefield;
     }
 }
