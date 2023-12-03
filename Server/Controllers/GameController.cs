@@ -18,9 +18,7 @@ using ShipsPosition = Dictionary<string, List<List<Coordinate>>>;
 [ApiController]
 public class GameController : ControllerBase
 {
-    private readonly DataContext _context;
-    private const int FIELD_SIZE = 10; 
-    private enum FieldCellType { Empty, Miss, Attacked, Ship }
+    private readonly DataContext _context; 
 
     public GameController(DataContext context)
     {
@@ -76,7 +74,7 @@ public class GameController : ControllerBase
             Player1Name = room.Player1.Username,
             Player2Name = room.Player2.Username,
             MakeMove = false,
-            Battlefield = BuildBattlefield(room.ShipsPosition2) 
+            Battlefield = Battlefield.Build(room.ShipsPosition2) 
         };
 
         return Ok(startGame);
@@ -106,7 +104,7 @@ public class GameController : ControllerBase
             Player1Name = room.Player1.Username,
             Player2Name = room.Player2.Username,
             MakeMove = true,
-            Battlefield = BuildBattlefield(room.ShipsPosition1)
+            Battlefield = Battlefield.Build(room.ShipsPosition1)
         };
 
         return Ok(startGame);
@@ -163,23 +161,5 @@ public class GameController : ControllerBase
         }
 
         return gameCode.ToString();
-    }
-
-    private static int[] BuildBattlefield(ShipsPosition shipsPosition)
-    {
-        int[] battlefield = new int[FIELD_SIZE * FIELD_SIZE];
-
-        foreach (var (key, ships) in shipsPosition)
-        {
-            foreach (var ship in ships)
-            {
-                foreach (var coordinate in ship)
-                {
-                    battlefield[coordinate.Y * FIELD_SIZE + coordinate.X] = (int)FieldCellType.Ship;
-                }
-            }
-        }  
-
-        return battlefield;
-    }
+    } 
 }
