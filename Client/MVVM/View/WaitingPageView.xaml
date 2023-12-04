@@ -22,7 +22,7 @@
              
              <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                  <Label HorizontalContentAlignment="Center" Margin="20 0 0 20" Content="CODE:" FontSize="50" Foreground="#696969"/>
-                 <Label HorizontalContentAlignment="Center" Margin="0 0 20 20" Content="{Binding GameCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="50" Foreground="#696969"/>
+                 <Label HorizontalContentAlignment="Center" Margin="0 0 20 20" Content="{Binding  GameCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="50" Foreground="#696969"/>
              </StackPanel>
          </StackPanel>
     </Border>

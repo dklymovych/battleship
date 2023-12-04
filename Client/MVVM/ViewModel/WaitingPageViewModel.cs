@@ -61,7 +61,6 @@ public class WaitingPageViewModel : Core.ViewModel
             if (responsePost.IsSuccessStatusCode)
             {
                 Globals.GameCode = "";
-                GameCode = "";
                 Navigation.NavigateTo<CreateGameViewModel>(); 
             }
             else
@@ -80,10 +79,10 @@ public class WaitingPageViewModel : Core.ViewModel
         }
     }
 
-    private void Func()
+    private void MakeTimer()
     {
         Timer.Interval = new TimeSpan(0, 0, 5);
-        Timer.Tick += Waiting; // set it up here
+        Timer.Tick += Waiting; 
         Timer.Start();
         
     }
@@ -99,11 +98,19 @@ public class WaitingPageViewModel : Core.ViewModel
             {
                 Timer.Stop();
                 GameCode = "";
-                //MessageBox.Show("Good request");
-                Navigation.NavigateTo<RatingViewModel>(); 
+                var responseContent = await responsePost.Content.ReadAsStringAsync();
+                var json = JObject.Parse(responseContent);
+                var username1 = json.Property("player1Name").Value.ToString().ToUpper();
+                var username2 = json.Property("player2Name").Value.ToString().ToUpper();
+                Globals.MyUsername = username1;
+                Globals.EnemyUsername = username2;
+                Globals.MyMove = true;
+                //MessageBox.Show($"{username1}/{username2}");
+                Navigation.NavigateTo<GameViewModel>(); 
             }
             else if ((int)responsePost.StatusCode == 204)
             {
+                // skip
             }
             else
             {
@@ -126,13 +133,24 @@ public class WaitingPageViewModel : Core.ViewModel
         }
     }
 
-    
-    public WaitingPageViewModel(INavigationService navService)
+    void RunView()
     {
-        Navigation = navService;
         GameCode = Globals.GameCode;
-        Func();
+        MakeTimer();
+    }
+    
+    public WaitingPageViewModel(INavigationService navigation)
+    {
+        Navigation = navigation;
+        navigation.Navigating += OnNavigating;
         NavigateToHomeCommand = new RelayCommand(o => { Navigation.NavigateTo<HomeViewModel>();}, canExecute:o => true );
         CancelCommand = new RelayCommand(o => { Cancel(); }, canExecute: o => true);
+    }
+    private void OnNavigating(Core.ViewModel viewModel)
+    {
+        if (viewModel is WaitingPageViewModel)
+        {
+            RunView();
+        }
     }
 }

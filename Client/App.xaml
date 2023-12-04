@@ -45,6 +45,9 @@
             <DataTemplate DataType="{x:Type viewModel:WaitingPageViewModel}">
                 <view:WaitingPageView/>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModel:GameViewModel}">
+                <view:GameView/>
+            </DataTemplate>
             <!-- Fonts-->
             <FontFamily x:Key="FontAwesome">/Fonts/fontawesome-webfont.ttf#FontAwesome</FontFamily>
             <Style x:Key="lblDesign" TargetType="Label">

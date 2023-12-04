@@ -38,6 +38,8 @@ namespace Client
             services.AddSingleton<BooleanToPrivacyTextConverter>();
             services.AddSingleton<INavigationService, NavigationService>();
             services.AddSingleton<WaitingPageViewModel>();
+            services.AddSingleton<GameViewModel>();
+
             //Делегат
             // Працює типу var x = Func
             services.AddSingleton<Func<Type, ViewModel>>(serviceProvider =>

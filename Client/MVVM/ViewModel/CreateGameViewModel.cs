@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Input;
 using Client.Core;
 using Client.MVVM.Model;
@@ -265,6 +266,7 @@ public class CreateGameViewModel : Core.ViewModel
     }
     
     public RelayCommand NavigateToSettingsViewCommand { get; set; }
+    public RelayCommand NavigateToGameViewCommand { get; set; }
     public RelayCommand NavigateToRatingViewCommand { get; set; }
     public RelayCommand NavigateToCreateGameViewCommand { get; set; }
 
@@ -297,7 +299,7 @@ public class CreateGameViewModel : Core.ViewModel
                     var responseContent = await responsePost.Content.ReadAsStringAsync();
                     var gameCode = JObject.Parse(responseContent)["gameCode"]!.ToString();
                     Globals.GameCode = gameCode;
-                    // MessageBox.Show($"{responseContent} => {token}");
+                    ClearBoard();
                     Navigation.NavigateTo<WaitingPageViewModel>();
                 }
                 else
@@ -330,6 +332,7 @@ public class CreateGameViewModel : Core.ViewModel
         SquareClickCommand = new RelayCommand(o=>{SquareClick(o as Square);}, canExecute:o=> true);
         OkCommand = new RelayCommand(o => OnOk(), o => true);
         NavigateToHomeCommand = new RelayCommand(o => { Navigation.NavigateTo<HomeViewModel>();}, canExecute:o => true );
+        NavigateToGameViewCommand = new RelayCommand(o => { Navigation.NavigateTo<GameViewModel>();}, canExecute:o => true );
         TogglePrivacyCommand = new RelayCommand(o => TogglePrivacy(), o => true);
         CreateCommand =  new RelayCommand(o => CreateGame(), o => true);
     }

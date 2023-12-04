@@ -74,7 +74,12 @@
             <!-- Контент з View (Коли немає Navbar i BattleShip панелі) -->
             <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
                     Visibility="{Binding Navigation.CurrentView, Converter={StaticResource VisibilityConverter},
-                     ConverterParameter='Client.MVVM.ViewModel.HomeViewModel, Client.MVVM.ViewModel.RegisterViewModel,Client.MVVM.ViewModel.LoginViewModel, Client.MVVM.ViewModel.WaitingPageViewModel'}">
+                     ConverterParameter='
+                     Client.MVVM.ViewModel.HomeViewModel, 
+                     Client.MVVM.ViewModel.RegisterViewModel,
+                     Client.MVVM.ViewModel.LoginViewModel, 
+                     Client.MVVM.ViewModel.WaitingPageViewModel, 
+                     Client.MVVM.ViewModel.GameViewModel'}">
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" >
                     <ContentControl Content="{Binding Navigation.CurrentView}">
                     </ContentControl>
@@ -84,7 +89,10 @@
             <!-- Панель з надписом Battleship (Немає в Home,Register,Login) -->
             <StackPanel Grid.Row="1" Grid.ColumnSpan="2"
                         Visibility="{Binding Navigation.CurrentView, Converter={StaticResource VisibilityConverter}, 
-                        ConverterParameter='Client.MVVM.ViewModel.RatingViewModel, Client.MVVM.ViewModel.CreateGameViewModel,Client.MVVM.ViewModel.JoinGameViewModel'}">
+                        ConverterParameter='Client.MVVM.ViewModel.RatingViewModel, 
+                        Client.MVVM.ViewModel.CreateGameViewModel,
+                        Client.MVVM.ViewModel.JoinGameViewModel,
+                        Client.MVVM.ViewModel.GameViewModel'}">
                 <Label VerticalAlignment="Top" HorizontalContentAlignment="Left" 
                        VerticalContentAlignment="Center" Padding="30 0 0 0" Content="BATTLESHIP"
                        Height="80"

@@ -312,9 +312,15 @@ public class JoinGameViewModel : Core.ViewModel
 
                     if (responsePost.IsSuccessStatusCode)
                     {
-                        //Globals.GameCode = GameCode;
-                        //MessageBox.Show($"Success");
-                        Navigation.NavigateTo<RatingViewModel>(); //this need to be in future a battle form
+                        var responseContent = await responsePost.Content.ReadAsStringAsync();
+                        var json = JObject.Parse(responseContent);
+                        var username1 = json.Property("player1Name").Value.ToString().ToUpper();
+                        var username2 = json.Property("player2Name").Value.ToString().ToUpper();
+                        Globals.MyUsername = username2;
+                        Globals.EnemyUsername = username1;
+                        Globals.MyMove = false;
+                        ClearBoard();
+                        Navigation.NavigateTo<GameViewModel>(); 
                     }
                     else
                     {
@@ -346,17 +352,26 @@ public class JoinGameViewModel : Core.ViewModel
             }
         }
     }
-    
+
+    private void RunView()
+    {
+        GameCode = Globals.GameCode;
+    }
     public JoinGameViewModel(INavigationService navigation)
     {
         Navigation = navigation;
         InitializeSquares();
+        navigation.Navigating += OnNavigating;
         ClearBoardCommand = new RelayCommand(o => ClearBoard(), canExecute:o => true);
         SquareClickCommand = new RelayCommand(o=>{SquareClick(o as Square);}, canExecute:o=> true);
         OkCommand = new RelayCommand(o => OnOk(), o => true);
         JoinGameCommand = new RelayCommand(o => JoinGame(), o => true);
-
-        NavigateToHomeCommand = new RelayCommand(o => { Navigation.NavigateTo<HomeViewModel>();}, canExecute:o => true );
-        // ConvertToJsonCommand =  new RelayCommand(o => SerializeJson(), o => true);
+    }
+    private void OnNavigating(Core.ViewModel viewModel)
+    {
+        if (viewModel is JoinGameViewModel)
+        {
+            RunView();
+        }
     }
 }
