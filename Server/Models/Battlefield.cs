@@ -8,6 +8,7 @@ class Battlefield
     private enum FieldCellType { Empty, Miss, Hit, Ship }
     private ShipsPosition _shipsPosition;
     private int[] _field;
+    private int _shipsCount = 10;
 
     public Battlefield(ShipsPosition shipsPosition)
     {
@@ -17,18 +18,18 @@ class Battlefield
 
     public int[] GetField() => _field;
 
-    public (bool, bool) MakeMove(Coordinate coordinate)
+    public (bool, bool) MakeMove(int x, int y)
     {
         bool isHit = false;
         bool isDestroy = false;
 
-        switch (GetCell(coordinate.X, coordinate.Y))
+        switch (GetCell(x, y))
         {
         case FieldCellType.Empty:
-            SetCell(coordinate.X, coordinate.Y, FieldCellType.Miss);
+            SetCell(x, y, FieldCellType.Miss);
             break; 
         case FieldCellType.Ship:
-            SetCell(coordinate.X, coordinate.Y, FieldCellType.Hit);
+            SetCell(x, y, FieldCellType.Hit);
             isHit = true;
             break;
         default:
@@ -37,14 +38,27 @@ class Battlefield
 
         if (isHit)
         {
-            var ship = FindShip(coordinate)!;
+            var ship = FindShip(x, y)!;
             isDestroy = DestroyShip(ship);
+
+            if (isDestroy) _shipsCount--;
         }
 
         return (isHit, isDestroy);
     }
 
-    private List<Coordinate>? FindShip(Coordinate coordinate)
+    public void ClearShips()
+    {
+        for (int i = 0; i < FIELD_SIZE * FIELD_SIZE; ++i)
+        {
+            if (_field[i] == (int)FieldCellType.Ship)
+                _field[i] = (int)FieldCellType.Empty;
+        }
+    }
+
+    public bool AllShipsDestroyed() => _shipsCount <= 0;
+
+    private List<Coordinate>? FindShip(int x, int y)
     {
         foreach (var (key, ships) in _shipsPosition)
         {
@@ -52,7 +66,7 @@ class Battlefield
             {
                 foreach (var cell in ship)
                 {
-                    if (cell == coordinate)
+                    if (cell.X == x && cell.Y == y)
                         return ship;
                 }
             }
