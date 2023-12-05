@@ -4,11 +4,18 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Client.MVVM.View"
+             xmlns:services="clr-namespace:Client.Services"
              mc:Ignorable="d"
+             
              Height="570" Width="800"
              >
+    <UserControl.Resources>
+        <services:ValueToTextConverter x:Key="ValueToTextConverter"/>
+    </UserControl.Resources>
+    
     <Border  CornerRadius="10">
         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+            
             <StackPanel Margin="0 20 0 0">
                 <Grid >
                     <Grid.ColumnDefinitions>
@@ -34,11 +41,22 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Border Background="{Binding Color}" Width="30" Height="30" Margin="1.5">
-                                    <Button Command="{Binding DataContext.SquareClickCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
-                                            CommandParameter="{Binding}"
+                                    <Button 
+                                            Opacity="0.75"
                                             Background="Transparent"
                                             BorderThickness="0"
-                                    ></Button>
+                                            Padding="0"
+                                            FontSize="30"
+                                            IsEnabled="False"
+                                            VerticalContentAlignment="Center"
+                                            HorizontalContentAlignment="Center"
+                                    >
+                                        <TextBlock Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ValueToTextConverter}}" 
+                                                   HorizontalAlignment="Center" 
+                                                   Foreground="Black"
+                                                   Opacity="0.6"
+                                                   VerticalAlignment="Center"/>
+                                    </Button>
                                 </Border>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
@@ -54,11 +72,23 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Border Background="{Binding Color}" Width="30" Height="30" Margin="1.5">
-                                    <Button Command="{Binding DataContext.SquareClickCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
-                                            CommandParameter="{Binding}"
-                                            Background="Transparent"
-                                            BorderThickness="0"
-                                    ></Button>
+                                    <Button 
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Padding="0"
+                                        FontSize="30"
+                                        IsEnabled="{Binding IsAllowedToMove,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        Command="{Binding DataContext.SquareClickCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                        CommandParameter="{Binding}"
+                                        VerticalContentAlignment="Center"
+                                        HorizontalContentAlignment="Center"
+                                    >
+                                        <TextBlock Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ValueToTextConverter}}" 
+                                                   HorizontalAlignment="Center" 
+                                                   Foreground="#252525"
+                                                   Opacity="0.66"
+                                                   VerticalAlignment="Center"/>
+                                    </Button>
                                 </Border>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
@@ -82,6 +112,7 @@
                             BorderBrush="Transparent" 
                             BorderThickness="0"
                             Command="{Binding CleanerCommand}"
+                            Foreground="#696969"
                             >
                         <Label Content="Surrender" Style="{StaticResource lblDesign}" FontSize="25"  Foreground="White"></Label>
                     </Button>
@@ -94,6 +125,7 @@
                                Content="{Binding MyMove, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     </Label>
                     </Border>
+                    
                     <!-- <Label Grid.Column="0" Foreground="#404040" HorizontalAlignment="Left">Username1</Label> -->
                     <!-- <Label Grid.Column="2" Foreground="#404040" HorizontalAlignment="Right">Username2</Label> -->
                 </Grid>

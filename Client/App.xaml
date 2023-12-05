@@ -60,6 +60,11 @@
                 <Setter Property="Foreground" Value="DarkGray"/>
                 <Setter Property="FontFamily" Value="Resources/Fonts/Black Ops One.ttf #Black Ops One"/>
             </Style>
+            <Style x:Key="TextStyleBlack" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="25"/>
+                <Setter Property="Foreground" Value="#404040"/>
+                <Setter Property="FontFamily" Value="Resources/Fonts/Black Ops One.ttf #Black Ops One"/>
+            </Style>
             
         </ResourceDictionary>
     </Application.Resources>

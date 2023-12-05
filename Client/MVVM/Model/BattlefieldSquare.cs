@@ -4,16 +4,29 @@ using System.Windows.Media;
 
 namespace Client.MVVM.Model;
 
-public class Square : INotifyPropertyChanged
+
+
+public class BattlefieldSquare : INotifyPropertyChanged
 {
     public int X { get; set; }
     public int Y { get; set; }
+    private int _value;
+    public int Value
+    {
+        get => _value;
+        set
+        {
+            _value = value;
+            Color = ValueToColor(_value);
+            OnPropertyChanged("Value");
+        }
+    }
 
     private SolidColorBrush _color;
     public bool isShip { get ; set; }
     public bool isCloseToShip { get; set; }
 
-   public SolidColorBrush Color
+    public SolidColorBrush Color
     {
         get { return _color; }
         set
@@ -27,19 +40,32 @@ public class Square : INotifyPropertyChanged
     {
         return $"x{X}y{Y}";
     }
+
+    public BattlefieldSquare(int x, int y, int value)
+    {
+        X = x;
+        Y = y;
+        Value = value;  // Set the initial value
+        isShip = false;
+        isCloseToShip = false;
+        // Initialize Color based on the initial value
+        Color = ValueToColor(value); 
+    }
+    private SolidColorBrush ValueToColor(int value)
+    {
+        switch (value)
+        {
+            case 0: return new SolidColorBrush(ColorFromHex("#696969"));
+            case 1: return new SolidColorBrush(ColorFromHex("#727272"));
+            case 2: return new SolidColorBrush(ColorFromHex("#F95454"));
+            case 3: return new SolidColorBrush(ColorFromHex("#2C3F66"));
+            default: return new SolidColorBrush(Colors.Black);
+        }
+    }
     private Color ColorFromHex(string hex)
     {
         // Convert hex to a Color
         return (Color)ColorConverter.ConvertFromString(hex);
-    }
-
-    public Square(int x, int y)
-    {
-        X = x;
-        Y = y;
-        isShip = false;
-        isCloseToShip = false;
-        Color = new SolidColorBrush(Colors.Gray); // Початковий колір
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
@@ -56,7 +82,7 @@ public class Square : INotifyPropertyChanged
         {
             if (isShip)
             {
-                Color = new SolidColorBrush(ColorFromHex("#2C3F66"));
+                Color = new SolidColorBrush(Colors.MidnightBlue);
             }
             else
             {
