@@ -191,7 +191,8 @@ public class GameController : ControllerBase
         BattlefieldDto battlefieldDto = new()
         {
             Battlefield = battlefield.GetField(),
-            IsMoveAllowed = IsMoveAllowed(room)
+            IsMoveAllowed = IsMoveAllowed(room),
+            WinnerName = room.Winner?.Username
         };
 
         return StatusCode(StatusCodes.Status201Created, battlefieldDto);
@@ -211,9 +212,6 @@ public class GameController : ControllerBase
 
         if (!IsPlayerInRoom(room))
             return BadRequest();
-        
-        if (room.Winner != null)
-            return BadRequest();
 
         ShipsPosition shipsPosition = room.Player1 == _currentPlayer
             ? room.ShipsPosition1 : room.ShipsPosition2!;
@@ -232,7 +230,8 @@ public class GameController : ControllerBase
         BattlefieldDto battlefieldDto = new()
         {
             Battlefield = battlefield.GetField(),
-            IsMoveAllowed = IsMoveAllowed(room)
+            IsMoveAllowed = IsMoveAllowed(room),
+            WinnerName = room.Winner?.Username
         };
 
         return Ok(battlefieldDto);
