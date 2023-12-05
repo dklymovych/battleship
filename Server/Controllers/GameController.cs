@@ -80,6 +80,23 @@ public class GameController : ControllerBase
         return Ok(startGameDto);
     }
 
+    [HttpGet("RandomRoom")]
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public ActionResult RandomRoom()
+    {
+        var rooms = _context.Rooms.Where(r => r.IsPublic && r.Player2 == null).ToList();
+
+        if (!rooms.Any())
+            return NotFound();
+
+        Random random = new();
+        string gameCode = rooms[random.Next(0, rooms.Count)].GameCode;
+
+        return Ok(new { GameCode = gameCode });
+    }
+
     [HttpGet("WaitForGame/{gameCode}")]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -259,6 +276,23 @@ public class GameController : ControllerBase
         _context.SaveChanges();
 
         return Ok();
+    }
+
+    [HttpGet("Scoreboard")]
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public ActionResult Scoreboard()
+    {
+        var scoreboard = _context.Players
+            .Select(player => new
+            {
+                Username = player.Username,
+                WinRate = _context.Rooms.Count(room => room.Winner == player) * 100 / _context.Rooms.Count(room => room.Player1 == player || room.Player2 == player),
+                NumberOfGames = _context.Rooms.Count(room => room.Player1 == player || room.Player2 == player)
+            })
+            .OrderByDescending(player => player.WinRate);
+
+        return Ok(new { Scoreboard = scoreboard });
     }
 
     private Room? FindRoom(string gameCode)
