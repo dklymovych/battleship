@@ -317,9 +317,6 @@ public class GameController : ControllerBase
 
     private bool IsMoveAllowed(Room room)
     {
-        if (room.Winner != null)
-            return false;
-
         PlayerMove? lastMove = _context.History
             .OrderBy(m => m.Id)
             .LastOrDefault(m => m.GameCode == room.GameCode);
