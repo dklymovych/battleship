@@ -18,7 +18,7 @@ using ShipsPosition = Dictionary<string, List<List<Coordinate>>>;
 [ApiController]
 public class GameController : ControllerBase
 {
-    private readonly DataContext _context;
+    private readonly DataContext _context; 
 
     public GameController(DataContext context)
     {
@@ -31,7 +31,7 @@ public class GameController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public ActionResult CreateRoom([FromBody] CreateRoomDto createRoomDto)
     {
-        Room room = new Room
+        Room room = new()
         {
             GameCode = GenerateGameCode(),
             IsPublic = createRoomDto.IsPublic,
@@ -69,13 +69,15 @@ public class GameController : ControllerBase
 
         _context.SaveChanges();
 
-        PlayerNamesDto playerNames = new PlayerNamesDto
+        StartGameDto startGameDto = new()
         {
             Player1Name = room.Player1.Username,
-            Player2Name = room.Player2.Username
+            Player2Name = room.Player2.Username,
+            MakeMove = false,
+            Battlefield = Battlefield.Build(room.ShipsPosition2) 
         };
 
-        return Ok(playerNames);
+        return Ok(startGameDto);
     }
 
     [HttpGet("WaitForGame/{gameCode}")]
@@ -97,13 +99,15 @@ public class GameController : ControllerBase
         if (room.Player2 == null)
             return NoContent();
 
-        PlayerNamesDto playerNames = new PlayerNamesDto
+        StartGameDto startGameDto = new()
         {
             Player1Name = room.Player1.Username,
-            Player2Name = room.Player2.Username
+            Player2Name = room.Player2.Username,
+            MakeMove = true,
+            Battlefield = Battlefield.Build(room.ShipsPosition1)
         };
 
-        return Ok(playerNames);
+        return Ok(startGameDto);
     }
 
     [HttpDelete("WaitForGame/{gameCode}")]
@@ -130,6 +134,134 @@ public class GameController : ControllerBase
         return Ok();
     }
 
+    [HttpPost("MakeMove/{gameCode}")]
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public ActionResult MakeMove([FromRoute] string gameCode, [FromBody] CoordinateDto coordinateDto)
+    {
+        Room? room = FindRoom(gameCode);
+
+        if (room == null)
+            return NotFound();
+
+        if (!IsPlayerInRoom(room))
+            return BadRequest(); 
+        
+        if (!IsMoveAllowed(room))
+            return BadRequest();
+
+        ShipsPosition shipsPosition = room.Player1 == _currentPlayer
+            ? room.ShipsPosition2! : room.ShipsPosition1;
+
+        Battlefield battlefield = new(shipsPosition);
+
+        var history = _context.History
+            .Where(m => (m.GameCode == gameCode) && (m.Player == _currentPlayer))
+            .AsEnumerable();
+
+        foreach (var move in history)
+        {
+            battlefield.MakeMove(move.X, move.Y);
+        }
+
+        var (isHit, isDestroy) = battlefield.MakeMove(coordinateDto.X, coordinateDto.Y);
+        battlefield.ClearShips();
+
+        if (battlefield.AllShipsDestroyed())
+        {
+            room.Winner = _currentPlayer;
+            room.GameEndedAt = DateTime.Now;
+        }
+
+        PlayerMove playerMove = new()
+        {
+            Room = room,
+            Player = _currentPlayer,
+            IsHit = isHit,
+            IsDestroy = isDestroy,
+            X = coordinateDto.X,
+            Y = coordinateDto.Y
+        };
+
+        _context.Add(playerMove);
+        _context.SaveChanges();
+
+        BattlefieldDto battlefieldDto = new()
+        {
+            Battlefield = battlefield.GetField(),
+            IsMoveAllowed = IsMoveAllowed(room)
+        };
+
+        return StatusCode(StatusCodes.Status201Created, battlefieldDto);
+    }
+
+    [HttpGet("WaitForMove/{gameCode}")]
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public ActionResult WaitForMove([FromRoute] string gameCode)
+    {
+        Room? room = FindRoom(gameCode);
+
+        if (room == null)
+            return NotFound();
+
+        if (!IsPlayerInRoom(room))
+            return BadRequest();
+        
+        if (room.Winner != null)
+            return BadRequest();
+
+        ShipsPosition shipsPosition = room.Player1 == _currentPlayer
+            ? room.ShipsPosition1 : room.ShipsPosition2!;
+
+        Battlefield battlefield = new(shipsPosition);
+
+        var history = _context.History
+            .Where(m => (m.GameCode == gameCode) && (m.Player != _currentPlayer))
+            .AsEnumerable();
+
+        foreach (var move in history)
+        {
+            battlefield.MakeMove(move.X, move.Y);
+        }
+
+        BattlefieldDto battlefieldDto = new()
+        {
+            Battlefield = battlefield.GetField(),
+            IsMoveAllowed = IsMoveAllowed(room)
+        };
+
+        return Ok(battlefieldDto);
+    }
+
+    [HttpDelete("WaitForMove/{gameCode}")]
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public ActionResult Surrender([FromRoute] string gameCode)
+    {
+        Room? room = FindRoom(gameCode);
+
+        if (room == null)
+            return NotFound();
+
+        if (!IsPlayerInRoom(room))
+            return BadRequest();
+
+        room.Winner = room.Player1 == _currentPlayer
+            ? room.Player2 : room.Player1;
+        
+        room.GameEndedAt = DateTime.Now;
+        _context.SaveChanges();
+
+        return Ok();
+    }
+
     private Room? FindRoom(string gameCode)
     {
         return _context.Rooms
@@ -142,13 +274,35 @@ public class GameController : ControllerBase
     private Player _currentPlayer => (
         _context.Players.FirstOrDefault(p => p.Username == User.FindFirstValue(ClaimTypes.Name))!
     );
+    
+    private bool IsPlayerInRoom(Room room) => (
+        room.Player2 != null && (room.Player1 == _currentPlayer || room.Player2 == _currentPlayer)
+    );
+
+    private bool IsMoveAllowed(Room room)
+    {
+        if (room.Winner != null)
+            return false;
+
+        PlayerMove? lastMove = _context.History
+            .OrderBy(m => m.Id)
+            .LastOrDefault(m => m.GameCode == room.GameCode);
+
+        if (lastMove == null)
+            return room.Player1 == _currentPlayer;
+        
+        if (lastMove.Player == _currentPlayer)
+            return lastMove.IsHit;
+
+        return !lastMove.IsHit;
+    }
 
     private static string GenerateGameCode()
     {
         const int GAME_CODE_LENGTH = 6;
 
-        StringBuilder gameCode = new StringBuilder();
-        Random random = new Random();
+        StringBuilder gameCode = new();
+        Random random = new();
 
         for (int i = 0; i < GAME_CODE_LENGTH; ++i)
         {
@@ -157,5 +311,5 @@ public class GameController : ControllerBase
         }
 
         return gameCode.ToString();
-    }
+    } 
 }
