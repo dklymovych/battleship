@@ -283,16 +283,14 @@ public class GameController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public ActionResult Scoreboard()
     {
-        var GetNumberOfGames = (Player player) => (
-            _context.Rooms.Count(room => room.Player1 == player || room.Player2 == player)
-        );
-
         var scoreboard = _context.Players
             .Select(player => new
             {
                 Username = player.Username,
-                WinRate = GetNumberOfGames(player) != 0 ? _context.Rooms.Count(room => room.Winner == player) * 100 / GetNumberOfGames(player) : 0,
-                NumberOfGames = GetNumberOfGames(player)
+                WinRate = _context.Rooms.Count(room => room.Player1 == player || room.Player2 == player) != 0
+                    ? _context.Rooms.Count(room => room.Winner == player) * 100 / _context.Rooms.Count(room => room.Player1 == player || room.Player2 == player)
+                    : 0,
+                NumberOfGames = _context.Rooms.Count(room => room.Player1 == player || room.Player2 == player)
             })
             .OrderByDescending(player => player.WinRate)
             .Take(10);
