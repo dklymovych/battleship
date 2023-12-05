@@ -8,4 +8,6 @@ public class BattlefieldDto
     public int[] Battlefield { get; set; } = null!;
     [Required]
     public bool IsMoveAllowed { get; set; }
+    [Required]
+    public string? WinnerName { get; set; }
 }
