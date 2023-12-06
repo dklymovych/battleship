@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Input;
 using Client.Core;
 using Client.MVVM.Model;
@@ -258,13 +259,14 @@ public class CreateGameViewModel : Core.ViewModel
     {
         if (_shipLengthsAvailable.Any(kv => kv.Value > 0))
         {
-            MessageBox.Show("Please place all ships in board!", "Alert", MessageBoxButton.OK);
+            Globals.ShowDialog("Please place all ships in board!");
             return false;
         }
         return true;
     }
     
     public RelayCommand NavigateToSettingsViewCommand { get; set; }
+    public RelayCommand NavigateToGameViewCommand { get; set; }
     public RelayCommand NavigateToRatingViewCommand { get; set; }
     public RelayCommand NavigateToCreateGameViewCommand { get; set; }
 
@@ -283,7 +285,7 @@ public class CreateGameViewModel : Core.ViewModel
             using (HttpClient httpClient = new HttpClient())
             {
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",Globals.LogginInUser.access_token);
-                string apiUrl = "http://localhost:5199";  // This needs to be in file config
+                string apiUrl = Globals.Url;  // This needs to be in file config
 
                 var postData = new { isPublic = !IsPrivate, shipsPosition = ships }; 
 
@@ -297,14 +299,14 @@ public class CreateGameViewModel : Core.ViewModel
                     var responseContent = await responsePost.Content.ReadAsStringAsync();
                     var gameCode = JObject.Parse(responseContent)["gameCode"]!.ToString();
                     Globals.GameCode = gameCode;
-                    // MessageBox.Show($"{responseContent} => {token}");
+                    ClearBoard();
                     Navigation.NavigateTo<WaitingPageViewModel>();
                 }
                 else
                 {
                     if ((int)responsePost.StatusCode == 400 )
                     {
-                        MessageBox.Show("BAD REQUEST", "Alert");
+                        Globals.ShowDialog("BAD REQUEST");
                     }
                     else if ((int)responsePost.StatusCode == 401)
                     {
@@ -313,14 +315,55 @@ public class CreateGameViewModel : Core.ViewModel
                     }
                     else
                     {
-                        MessageBox.Show($"{responsePost.StatusCode} {(int)responsePost.StatusCode}");
+                        Globals.ShowDialog($"{responsePost.StatusCode} {(int)responsePost.StatusCode}");
                     }
                 }
            
             }
         }
     }
-
+    bool AreAllValuesZero(Dictionary<int, int> dictionary)
+    {
+        foreach (var value in dictionary.Values)
+        {
+            if (value > 0)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    void randomboard()
+    {
+        Random rnd = new Random();
+        while (!AreAllValuesZero(_shipLengthsAvailable))
+        {
+            int x = rnd.Next(0, 10);
+            int y = rnd.Next(0, 10);
+            int length = rnd.Next(1, 5);
+            Square square = new Square(x, y);
+            int var = rnd.Next(0,2);
+            string orientation = "";
+            if (var == 0)
+            {
+                orientation = "Horizontal";
+            }
+            else if (var == 1)
+            {
+                orientation = "Vertical";
+            }
+        
+            if (_shipLengthsAvailable.ContainsKey(length) && _shipLengthsAvailable[length] > 0)
+            {
+                if (IsValidPlacement(square, length, orientation))
+                {
+                    PlaceShip(square, length, orientation);
+                    _shipLengthsAvailable[length]--;
+                }
+            }
+        }
+    }
+    public ICommand random { get; set; }
     public CreateGameViewModel(INavigationService navService)
     {
         Navigation = navService;
@@ -330,7 +373,9 @@ public class CreateGameViewModel : Core.ViewModel
         SquareClickCommand = new RelayCommand(o=>{SquareClick(o as Square);}, canExecute:o=> true);
         OkCommand = new RelayCommand(o => OnOk(), o => true);
         NavigateToHomeCommand = new RelayCommand(o => { Navigation.NavigateTo<HomeViewModel>();}, canExecute:o => true );
+        NavigateToGameViewCommand = new RelayCommand(o => { Navigation.NavigateTo<GameViewModel>();}, canExecute:o => true );
         TogglePrivacyCommand = new RelayCommand(o => TogglePrivacy(), o => true);
         CreateCommand =  new RelayCommand(o => CreateGame(), o => true);
+        random = new RelayCommand(o => randomboard(), canExecute:o=> true);
     }
 }

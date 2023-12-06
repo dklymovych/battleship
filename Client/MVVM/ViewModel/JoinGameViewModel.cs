@@ -282,7 +282,7 @@ public class JoinGameViewModel : Core.ViewModel
     {
         if (_shipLengthsAvailable.Any(kv => kv.Value > 0))
         {
-            MessageBox.Show("Please place all ships in board!", "Alert", MessageBoxButton.OK);
+            Globals.ShowDialog("Please place all ships in board!");
             return false;
         }
 
@@ -291,6 +291,49 @@ public class JoinGameViewModel : Core.ViewModel
 
     public ICommand ConvertToJsonCommand { get; private set; }
     public ICommand JoinGameCommand { get; private set; }
+
+    public async void RandomGame()
+    {
+        if (OnOk())
+        {
+            using (HttpClient httpClient = new HttpClient())
+            {
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",Globals.LogginInUser.access_token);
+                string apiUrl = Globals.Url;  // This needs to be in file config
+                HttpResponseMessage responsePost = await httpClient.GetAsync($"{apiUrl}/api/Game/RandomRoom");
+
+                if (responsePost.IsSuccessStatusCode)
+                {
+                    var responseContent = await responsePost.Content.ReadAsStringAsync();
+                    Globals.GameCode = JObject.Parse(responseContent)["gameCode"]!.ToString();
+                    GameCode = Globals.GameCode;
+                    JoinGame();
+                }
+                else
+                {
+                    if ((int)responsePost.StatusCode == 400 )
+                    {
+                        Globals.ShowDialog("BAD REQUEST");
+                    }
+                    else  if ((int)responsePost.StatusCode == 404 )
+                    {
+                        Globals.ShowDialog("No Public Rooms");
+                    }
+                    else if ((int)responsePost.StatusCode == 401)
+                    {
+                        Globals.LogginInUser.Logout();
+                        Navigation.NavigateTo<HomeViewModel>();
+                    }
+                    else
+                    {
+                        Globals.ShowDialog($"{responsePost.StatusCode} {(int)responsePost.StatusCode}");
+                    }
+                   
+                }
+       
+            }
+        }
+    }
 
     private async void JoinGame()
     {
@@ -301,7 +344,7 @@ public class JoinGameViewModel : Core.ViewModel
                 using (HttpClient httpClient = new HttpClient())
                 {
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",Globals.LogginInUser.access_token);
-                    string apiUrl = "http://localhost:5199";  // This needs to be in file config
+                    string apiUrl = Globals.Url;  // This needs to be in file config
 
                     var postData = new { shipsPosition = ships }; 
 
@@ -312,19 +355,40 @@ public class JoinGameViewModel : Core.ViewModel
 
                     if (responsePost.IsSuccessStatusCode)
                     {
-                        //Globals.GameCode = GameCode;
-                        //MessageBox.Show($"Success");
-                        Navigation.NavigateTo<RatingViewModel>(); //this need to be in future a battle form
+                        try
+                        {
+                            var responseContent = await responsePost.Content.ReadAsStringAsync();
+                            // Console.WriteLine("Received JSON: " + responseContent); // Log the raw JSON
+                            var json = JObject.Parse(responseContent);
+                            var username1 = json.Property("player1Name").Value.ToString().ToUpper();
+                            var username2 = json.Property("player2Name").Value.ToString().ToUpper();
+                            var move = (bool)json.Property("makeMove");
+                            List<int> field = json["battlefield"].ToObject<List<int>>(); // Deserialization
+                            Globals.MyUsername = username2;
+                            Globals.EnemyUsername = username1;
+                            Globals.MyMove = move;
+                            Globals.Battlefield = field;
+                            Globals.GameCode = GameCode;
+                            //Console.WriteLine($"{move}/{username1}/{username2}");
+                            // Console.WriteLine($"{field}");
+                            ClearBoard();
+                            Navigation.NavigateTo<GameViewModel>(); 
+                        }
+                        catch (JsonSerializationException ex)
+                        {
+                            Console.WriteLine("Error deserializing JSON: " + ex.Message);
+                            // Handle the error or log more details
+                        }
                     }
                     else
                     {
                         if ((int)responsePost.StatusCode == 400 )
                         {
-                            MessageBox.Show("BAD REQUEST", "Alert");
+                            Globals.ShowDialog("BAD REQUEST");
                         }
                         else  if ((int)responsePost.StatusCode == 404 )
                         {
-                            MessageBox.Show("THERE IS NO SUCH ROOM", "Warning");
+                            Globals.ShowDialog("THERE IS NO SUCH ROOM");
                         }
                         else if ((int)responsePost.StatusCode == 401)
                         {
@@ -333,7 +397,7 @@ public class JoinGameViewModel : Core.ViewModel
                         }
                         else
                         {
-                            MessageBox.Show($"{responsePost.StatusCode} {(int)responsePost.StatusCode}");
+                            Globals.ShowDialog($"{responsePost.StatusCode} {(int)responsePost.StatusCode}");
                         }
                        
                     }
@@ -342,21 +406,76 @@ public class JoinGameViewModel : Core.ViewModel
             }
             else
             {
-                MessageBox.Show("Please enter game code!", "Alert", MessageBoxButton.OK);
+                Globals.ShowDialog("Please enter game code!");
             }
         }
     }
-    
+
+    private void RunView()
+    {
+        GameCode = Globals.GameCode;
+    }
+    bool AreAllValuesZero(Dictionary<int, int> dictionary)
+    {
+        foreach (var value in dictionary.Values)
+        {
+            if (value > 0)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    void randomboard()
+    {
+        Random rnd = new Random();
+        while (!AreAllValuesZero(_shipLengthsAvailable))
+        {
+            int x = rnd.Next(0, 10);
+            int y = rnd.Next(0, 10);
+            int length = rnd.Next(1, 5);
+            Square square = new Square(x, y);
+            int var = rnd.Next(0,2);
+            string orientation = "";
+            if (var == 0)
+            {
+               orientation = "Horizontal";
+            }
+            else if (var == 1)
+            {
+                 orientation = "Vertical";
+            }
+        
+            if (_shipLengthsAvailable.ContainsKey(length) && _shipLengthsAvailable[length] > 0)
+            {
+                if (IsValidPlacement(square, length, orientation))
+                {
+                    PlaceShip(square, length, orientation);
+                    _shipLengthsAvailable[length]--;
+                }
+            }
+        }
+    }
+    public ICommand random { get; set; }
+
+    public ICommand RandomGameCommand { get; set; }
     public JoinGameViewModel(INavigationService navigation)
     {
         Navigation = navigation;
         InitializeSquares();
+        navigation.Navigating += OnNavigatingJoin;
         ClearBoardCommand = new RelayCommand(o => ClearBoard(), canExecute:o => true);
         SquareClickCommand = new RelayCommand(o=>{SquareClick(o as Square);}, canExecute:o=> true);
         OkCommand = new RelayCommand(o => OnOk(), o => true);
         JoinGameCommand = new RelayCommand(o => JoinGame(), o => true);
-
-        NavigateToHomeCommand = new RelayCommand(o => { Navigation.NavigateTo<HomeViewModel>();}, canExecute:o => true );
-        // ConvertToJsonCommand =  new RelayCommand(o => SerializeJson(), o => true);
+        RandomGameCommand = new RelayCommand(o => RandomGame(), o => true);
+        random = new RelayCommand(o => randomboard(), canExecute:o=> true);
+    }
+    private void OnNavigatingJoin(Core.ViewModel viewModel)
+    {
+        if (viewModel is JoinGameViewModel)
+        {
+            RunView();
+        }
     }
 }

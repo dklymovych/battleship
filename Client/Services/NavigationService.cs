@@ -7,6 +7,7 @@ namespace Client.Services;
 
 public interface INavigationService
 {
+    public event Action<ViewModel> Navigating;
     ViewModel CurrentView { get; }
     void NavigateTo<T>() where T : ViewModel;
 }
@@ -14,6 +15,7 @@ public class NavigationService : ObservableObject, INavigationService
 {
     private readonly Func<Type, ViewModel> _viewModelFactory;
     private ViewModel _currentView;
+    public event Action<ViewModel> Navigating;
     public ViewModel CurrentView
     {
         get => _currentView;
@@ -31,9 +33,8 @@ public class NavigationService : ObservableObject, INavigationService
 
     public void NavigateTo<TViewModel>() where TViewModel : ViewModel
     {
-        // NagiteTo<HomeViewModel>();
-        // Приклад використання для переходу
         ViewModel viewModel = _viewModelFactory.Invoke(typeof(TViewModel));
+        Navigating?.Invoke(viewModel);
         CurrentView = viewModel;
     }
 }

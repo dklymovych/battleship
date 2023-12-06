@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System;
 using Client.MVVM.Model;
+using Client.MVVM.View;
 using Newtonsoft.Json.Linq;
 
 namespace Client.MVVM.ViewModel;
@@ -52,6 +53,9 @@ public class LoginViewModel : Core.ViewModel
     public RelayCommand NavigateToHomeCommand { get; set; }
     public RelayCommand NavigateToRatingViewCommand { get; set; }
     public ICommand SubmitCommand { get; set; }
+
+
+    
     private async void Submit()
     {
         using (HttpClient httpClient = new HttpClient())
@@ -61,12 +65,13 @@ public class LoginViewModel : Core.ViewModel
             string password = Password;
             if (username == "" || password == "")
             {
-                MessageBox.Show("Fields are empty");
+                //MessageBox.Show("Fields are empty");
+                Globals.ShowDialog("Fields are empty");
                 return;
             }
            
 
-            string apiUrl = "http://localhost:5199";  // This needs to be in file config
+            string apiUrl = Globals.Url;  // This needs to be in file config
 
             var postData = new { username = username, password = password };  // This needs to be in file config
 
@@ -90,11 +95,11 @@ public class LoginViewModel : Core.ViewModel
             {
                 if ((int)responsePost.StatusCode == 400 )
                 {
-                    MessageBox.Show("Bad request");
+                    Globals.ShowDialog("Bad request");
                 }
                 if ((int)responsePost.StatusCode == 401)
                 {
-                    MessageBox.Show("Username or password are incorrect!");
+                    Globals.ShowDialog("Username or password are incorrect!");
                 }
             }
            

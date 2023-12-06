@@ -7,6 +7,8 @@ using System.Net.Http;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using Client.MVVM.Model;
+
 namespace Client.MVVM.ViewModel;
 
 public class RegisterViewModel : Core.ViewModel
@@ -68,11 +70,11 @@ public class RegisterViewModel : Core.ViewModel
            
             if (password != confirmedPassword)
             {
-                MessageBox.Show("Passwords do not match!");
+                Globals.ShowDialog("Passwords do not match!");
                 return;
             }
 
-            string apiUrl = "http://localhost:5199";  // This needs to be in file config
+            string apiUrl = Globals.Url;  // This needs to be in file config
 
             var postData = new { username = username, password = password }; // This needs to be in file config
 
@@ -90,7 +92,7 @@ public class RegisterViewModel : Core.ViewModel
             }
             else
             {
-                MessageBox.Show("This user is already exist!");
+                Globals.ShowDialog("This user is already exist!");
             }
         }
     }

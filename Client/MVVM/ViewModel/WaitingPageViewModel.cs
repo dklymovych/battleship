@@ -61,7 +61,6 @@ public class WaitingPageViewModel : Core.ViewModel
             if (responsePost.IsSuccessStatusCode)
             {
                 Globals.GameCode = "";
-                GameCode = "";
                 Navigation.NavigateTo<CreateGameViewModel>(); 
             }
             else
@@ -80,36 +79,51 @@ public class WaitingPageViewModel : Core.ViewModel
         }
     }
 
-    private void Func()
+    private void MakeTimer()
     {
-        Timer.Interval = new TimeSpan(0, 0, 5);
-        Timer.Tick += Waiting; // set it up here
+        Timer.Stop(); // Stop any existing timer
+        Timer.Interval = new TimeSpan(0, 0, 1);
+        // Clear existing event handlers
+        Timer.Tick -= Waiting; // Remove the handler if it's already there
+        Timer.Tick += Waiting; // Add the handler
         Timer.Start();
-        
     }
+
     private async void Waiting(object? sender, EventArgs eventArgs)
     {
         using (HttpClient httpClient = new HttpClient())
         {
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",Globals.LogginInUser.access_token);
-            string apiUrl = "http://localhost:5199";  // This needs to be in file config
+            string apiUrl = Globals.Url; // This needs to be in file config
             HttpResponseMessage responsePost = await httpClient.GetAsync($"{apiUrl}/api/Game/WaitForGame/{Globals.GameCode}");
 
             if ((int)responsePost.StatusCode == 200)
             {
                 Timer.Stop();
                 GameCode = "";
-                //MessageBox.Show("Good request");
-                Navigation.NavigateTo<RatingViewModel>(); 
+                var responseContent = await responsePost.Content.ReadAsStringAsync();
+                // Console.WriteLine("Received JSON: " + responseContent); // Log the raw JSON
+                var json = JObject.Parse(responseContent);
+                var username1 = json.Property("player1Name").Value.ToString().ToUpper();
+                var username2 = json.Property("player2Name").Value.ToString().ToUpper();
+                var move = (bool)json.Property("makeMove");
+                List<int> field = json["battlefield"].ToObject<List<int>>(); // Deserialization
+                Globals.MyUsername = username1;
+                Globals.EnemyUsername = username2;
+                Globals.MyMove = move;
+                Globals.Battlefield = field;
+                // MessageBox.Show($"{username1}/{username2}");
+                Navigation.NavigateTo<GameViewModel>(); 
             }
             else if ((int)responsePost.StatusCode == 204)
             {
+                // skip
             }
             else
             {
                 if ((int)responsePost.StatusCode == 400 )
                 {
-                    MessageBox.Show("BAD REQUEST", "Alert");
+                    Globals.ShowDialog("BAD REQUEST");
                 }
                 else if ((int)responsePost.StatusCode == 401)
                 {
@@ -119,20 +133,39 @@ public class WaitingPageViewModel : Core.ViewModel
                 else
                 {
                     var responseContent = await responsePost.Content.ReadAsStringAsync();
-                    MessageBox.Show($"{responsePost.StatusCode} {(int)responsePost.StatusCode}");
+                    Globals.ShowDialog($"{responsePost.StatusCode} {(int)responsePost.StatusCode}");
                 }
             }
            
         }
     }
 
-    
-    public WaitingPageViewModel(INavigationService navService)
+    void RunWaitingView()
     {
-        Navigation = navService;
+        
         GameCode = Globals.GameCode;
-        Func();
+        MakeTimer();
+    }
+    
+    public WaitingPageViewModel(INavigationService navigation)
+    {
+        Navigation = navigation;
+        navigation.Navigating += OnNavigatingWating;
         NavigateToHomeCommand = new RelayCommand(o => { Navigation.NavigateTo<HomeViewModel>();}, canExecute:o => true );
         CancelCommand = new RelayCommand(o => { Cancel(); }, canExecute: o => true);
+    }
+    private void OnNavigatingWating(Core.ViewModel viewModel)
+    {
+        
+        if (viewModel is not WaitingPageViewModel)
+        {
+            Timer.Stop();
+            Timer.Tick -= Waiting; // Detach the event handler
+        }
+        else
+        {
+            RunWaitingView();
+        }
+       
     }
 }
