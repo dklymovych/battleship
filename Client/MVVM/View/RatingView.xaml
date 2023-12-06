@@ -1,0 +1,71 @@
+<UserControl x:Class="Client.MVVM.View.RatingView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Client.MVVM.View"
+             xmlns:services="clr-namespace:Client.Services"
+             mc:Ignorable="d"
+             Height="490" Width="600">
+    <UserControl.Resources>
+        <services:RankConverter x:Key="RankConverter"/>
+    </UserControl.Resources>
+    <Grid  HorizontalAlignment="Center" >
+       <StackPanel Orientation="Vertical">
+           <StackPanel VerticalAlignment="Top"  Margin="0 30 0 0">
+               <Label VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Background="#D9D9D9" Width="480" Height="70"
+                      Content="Scoreboard" Style="{StaticResource lblDesign}" FontSize="38"  Foreground="#404040"></Label>
+           </StackPanel>
+           <StackPanel VerticalAlignment="Top"  Margin="0 20 0 0"  Background="#D9D9D9" Width="480" Height="300" CanVerticallyScroll="True">
+               <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                   <!-- Column Headers -->
+                    <Border >
+                        <StackPanel Orientation="Horizontal" Margin="10 25 25 10" HorizontalAlignment="Center">
+                            <Border BorderBrush="#404040" BorderThickness="2" Margin="0 0 10 0"><TextBlock Style="{StaticResource TextStyleBlack}" Text="Rank" Width="100" Foreground="#404040" FontSize="15" Padding="0" TextAlignment="Center"/></Border>
+                            <Border BorderBrush="#404040" BorderThickness="2 2 1 2"><TextBlock Style="{StaticResource TextStyleBlack}" Text="Username" Width="100" Foreground="#404040" FontSize="15" Padding="0" TextAlignment="Center"/></Border>
+                            <Border BorderBrush="#404040" BorderThickness="1 2 1 2"><TextBlock Style="{StaticResource TextStyleBlack}" Text="WinRate" Width="100" Foreground="#404040" FontSize="15" Padding="0"  TextAlignment="Center"/></Border>
+                            <Border BorderBrush="#404040" BorderThickness="1 2 2 2"><TextBlock Style="{StaticResource TextStyleBlack}" Text="Played" Width="100" Foreground="#404040" FontSize="15" Padding="0" TextAlignment="Center"/></Border>
+                        </StackPanel>
+                    </Border>
+                   <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" Height="200">
+                   <ItemsControl ItemsSource="{Binding Scoreboard}" AlternationCount="100000" HorizontalAlignment="Center">
+                       <ItemsControl.ItemTemplate>
+                           <DataTemplate>
+                               <StackPanel Orientation="Horizontal" Margin="10 0" HorizontalAlignment="Center" VerticalAlignment="Center" >
+                                   <!-- Rank Numerator -->
+                                   <Border BorderBrush="#404040" Margin="0 0 10 0" BorderThickness="1 1 1 1"><TextBlock  Style="{StaticResource TextStyleBlack}"  Foreground="#404040" FontSize="16" Padding="0"  Text="{Binding Path=(ItemsControl.AlternationIndex), 
+                                      RelativeSource={RelativeSource TemplatedParent}, 
+                                      Converter={StaticResource RankConverter}}" Width="100" TextAlignment="Center" VerticalAlignment="Center" /></Border>
+                                   <!-- Other Data -->
+                                   <Border BorderBrush="#404040" BorderThickness="1 1 1 1" VerticalAlignment="Center"><TextBlock TextWrapping="Wrap"  Style="{StaticResource TextStyleBlack}"  Foreground="#404040" FontSize="16" Padding="0"  Text="{Binding [username]}" Width="100" TextAlignment="Center"/></Border>
+                                   <Border BorderBrush="#404040" BorderThickness="1 1 1 1"  ><TextBlock  Style="{StaticResource TextStyleBlack}"  Foreground="#404040" FontSize="16" Padding="0"  Text="{Binding [winRate], StringFormat='{}{0}%'}" Width="100" TextAlignment="Center" VerticalAlignment="Center"/></Border>
+                                    <Border BorderBrush="#404040" BorderThickness="1 1 1 1"  ><TextBlock   Style="{StaticResource TextStyleBlack}"  Foreground="#404040" FontSize="16" Padding="0"  Text="{Binding [numberOfGames]}" Width="100" TextAlignment="Center" VerticalAlignment="Center"/></Border>
+                               </StackPanel>
+                           </DataTemplate>
+                       </ItemsControl.ItemTemplate>
+                   </ItemsControl>
+                   </ScrollViewer>
+               </StackPanel>
+
+
+
+               <!-- <ScrollViewer VerticalScrollBarVisibility="Auto"  Width="450" Height="300" Margin="5 0 5 0"> -->
+               <!--     <TextBlock TextWrapping="Wrap" Margin="15 20"> -->
+               <!--         <ItemsControl ItemsSource="{Binding Scoreboard}"> -->
+               <!--             <ItemsControl.ItemTemplate> -->
+               <!--                 <DataTemplate> -->
+               <!--                     <TextBlock></TextBlock> -->
+               <!--                 </DataTemplate> -->
+               <!--             </ItemsControl.ItemTemplate> -->
+               <!--         </ItemsControl> -->
+               <!--     </TextBlock> -->
+               <!-- </ScrollViewer> -->
+           </StackPanel>
+       </StackPanel>
+        <!-- <StackPanel> -->
+        <!--     <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="40"> Asdasd</TextBlock> -->
+        <!--     <Button Content="home" Command="{Binding NavigateToHomeCommand}"></Button> -->
+        <!-- </StackPanel> -->
+        
+    </Grid>
+</UserControl>
