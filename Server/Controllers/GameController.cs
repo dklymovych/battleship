@@ -262,7 +262,7 @@ public class GameController : ControllerBase
         return Ok();
     }
 
-    private Room? FindRoom(string gameCode)
+    public Room? FindRoom(string gameCode)
     {
         return _context.Rooms
             .Include(r => r.Player1)
@@ -297,7 +297,7 @@ public class GameController : ControllerBase
         return !lastMove.IsHit;
     }
 
-    private static string GenerateGameCode()
+    public  string GenerateGameCode()
     {
         const int GAME_CODE_LENGTH = 6;
 
@@ -312,4 +312,5 @@ public class GameController : ControllerBase
 
         return gameCode.ToString();
     } 
+    
 }

@@ -5,10 +5,14 @@ namespace Server.Database;
 
 public class DataContext : DbContext
 {
+    protected DataContext()
+    {
+    }
+
     public DataContext(DbContextOptions<DataContext> options) : base(options) {}
 
     public DbSet<Player> Players { get; set; } = null!;
-    public DbSet<Room> Rooms { get; set; } = null!;
+    public virtual DbSet<Room> Rooms { get; set; } = null!;
     public DbSet<PlayerMove> History { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
