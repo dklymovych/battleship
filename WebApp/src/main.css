@@ -1,0 +1,10 @@
+@import '@fontsource/roboto/400.css';
+
+:root {
+  font-family: Roboto;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
