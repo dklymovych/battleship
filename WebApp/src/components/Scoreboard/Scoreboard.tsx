@@ -10,7 +10,7 @@ import {
 
 const styles = {
   container: {
-    maxWidth: 800,
+    width: 800,
     borderRadius: "20px",
     backgroundColor: "#d9d9d9"
   },
