@@ -1,4 +1,12 @@
 @import '@fontsource/roboto/400.css';
+@import url('https://fonts.googleapis.com/css2?family=Notable&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+
+body{
+  padding: 0;
+  margin: 0;
+  background: #FFF;
+  color: #000;
+}
 
 :root {
   font-family: Roboto;
@@ -7,4 +15,17 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.notable-regular {
+  font-family: "Notable", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.rubik-regular{
+  font-family: "Rubik", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 800;
+  font-style: normal;
 }
