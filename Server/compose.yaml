@@ -1,0 +1,18 @@
+services:
+  app:
+    build: .
+    container_name: battleship-app
+    depends_on:
+      - db
+    ports:
+      - "5199:5199"
+  db:
+    image: postgres:latest
+    container_name: battleship-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: pg1234
+      POSTGRES_DB: battleshipdb
+    ports:
+      - "5432:5432"
