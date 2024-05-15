@@ -2,7 +2,7 @@ namespace WebApp.Dto;
 
 public class ScoreboardDto
 {
-    public ScoreboardItemDto[] scoreboard = null!;
+    public ScoreboardItemDto[] scoreboard { get; set; } = null!;
 }
 
 public class ScoreboardItemDto

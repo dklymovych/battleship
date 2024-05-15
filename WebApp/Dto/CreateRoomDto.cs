@@ -1,11 +1,11 @@
-using System.Text.Json.Nodes;
-
 namespace WebApp.Dto;
+
+using ShipsPositionType = Dictionary<string, List<List<CoordinateDto>>>;
 
 public class CreateRoomDto
 {
     public bool IsPublic { get; set; }
-    public JsonObject ShipsPosition { get; set; } = null!;
+    public ShipsPositionType ShipsPosition { get; set; } = null!;
 }
 
 public class GameCodeDto

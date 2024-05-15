@@ -1,8 +1,8 @@
-using System.Text.Json.Nodes;
-
 namespace WebApp.Dto;
+
+using ShipsPositionType = Dictionary<string, List<List<CoordinateDto>>>;
 
 public class JoinRoomDto
 {
-    public JsonObject ShipsPosition { get; set; } = null!;
+    public ShipsPositionType ShipsPosition { get; set; } = null!;
 }
