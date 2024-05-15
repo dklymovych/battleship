@@ -12,6 +12,7 @@ class Program
         builder.Services.AddHttpClient();
 
         builder.Services.AddScoped<AuthApiService>();
+        builder.Services.AddScoped<GameApiService>();
 
         var app = builder.Build();
 
