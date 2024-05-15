@@ -1,6 +1,6 @@
 using System.Net;
 
-namespace Server.Dto;
+namespace WebApp.Dto;
 
 public class ResponseDto<T>
 {

@@ -1,3 +1,5 @@
+using WebApp.Services;
+
 namespace WebApp;
 
 class Program
@@ -9,6 +11,8 @@ class Program
         builder.Services.AddRazorPages();
         builder.Services.AddHttpClient();
 
+        builder.Services.AddScoped<AuthApiService>();
+
         var app = builder.Build();
 
         if (!app.Environment.IsDevelopment())
@@ -17,7 +21,7 @@ class Program
             app.UseHsts();
         }
 
-        app.UseHttpsRedirection();
+        // app.UseHttpsRedirection();
         app.UseStaticFiles();
 
         app.UseRouting();

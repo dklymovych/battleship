@@ -1,6 +1,6 @@
 using System.Net.Http.Headers;
 using System.Text.Json;
-using Server.Dto;
+using WebApp.Dto;
 
 namespace WebApp.Services;
 
@@ -48,7 +48,7 @@ public class BaseApiService
     private static async Task<ResponseDto<T>> ParseResponse<T>(HttpResponseMessage res)
     {
         T? data = default;
-        var content = await res.Content.ReadAsStreamAsync();
+        var content = await res.Content.ReadAsStringAsync();
 
         if (res.IsSuccessStatusCode && content.Length != 0)
         {
