@@ -26,6 +26,10 @@ ViewData["Title"] = "Scoreboard";
             width: 100%;
             margin: 10px 0;
         }
+        .btn-active {
+            background-color: #000; 
+            color: white; 
+        }
         .main-content {
             background-color: white;
             height: calc(100vh - 30px);
@@ -38,7 +42,7 @@ ViewData["Title"] = "Scoreboard";
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-4 sidebar">
-            <button class="btn btn-secondary">RATING</button>
+            <button class="btn @("RATING".Equals(ViewData["Title"]) ? "btn-active" : "btn-secondary")">RATING</button>
             <button class="btn btn-secondary">JOIN GAME</button>
             <button class="btn btn-secondary">CREATE GAME</button>
             <button class="btn btn-secondary mt-auto">LOG OUT</button>

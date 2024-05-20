@@ -24,11 +24,11 @@ namespace WebApp.Pages
             }
             else
             {
-                // Handle error
                 Scoreboard = new ScoreboardDto
                 {
                     scoreboard = new[]
                     {
+                        //діставати з баз даних
                         new ScoreboardItemDto { username = "User1", winRate = 75, numberOfGames = 20 },
                         new ScoreboardItemDto { username = "User2", winRate = 60, numberOfGames = 15 },
                         new ScoreboardItemDto { username = "User3", winRate = 85, numberOfGames = 25 },
