@@ -4,49 +4,6 @@
 ViewData["Title"] = "Login page";
 }
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewData["Title"]</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .header-container {
-            background-color: #333; 
-            color: white; 
-            padding: 1px;
-            text-align: center;
-            border-radius: 5px;
-        }
-        .btn-custom {
-            background-color: #333; 
-            color: white; 
-            border: none;
-            width: 100%; 
-            padding: 10px;
-            text-align: center;
-            display: inline-block;
-            font-size: 16px;
-            margin-top: 10px;
-            cursor: pointer;
-            border-radius: 5px; 
-        }
-        .btn-custom:hover {
-            background-color: #555; 
-        }
-        .form-control-custom {
-            border: 1px solid #ccc; 
-            background-color: white !important; 
-            color: #333; 
-        }
-        .form-control-custom:focus {
-            border-color: #666;
-            box-shadow: none; 
-            background-color: white; 
-    </style>
-</head>
-<body>
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-4">
@@ -70,13 +27,39 @@ ViewData["Title"] = "Login page";
         </div>
     </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script>
-    const scriptContent = document.querySelector('[name="X-LocalStorage-Script"]')?.content;
-    if (scriptContent) {
-        eval(scriptContent);
+
+<style>
+    .header-container {
+        background-color: #333; 
+        color: white; 
+        padding: 1px;
+        text-align: center;
+        border-radius: 5px;
     }
-</script>
-</body>
-</html>
+    .btn-custom {
+        background-color: #333; 
+        color: white; 
+        border: none;
+        width: 100%; 
+        padding: 10px;
+        text-align: center;
+        display: inline-block;
+        font-size: 16px;
+        margin-top: 10px;
+        cursor: pointer;
+        border-radius: 5px; 
+    }
+    .btn-custom:hover {
+        background-color: #555; 
+    }
+    .form-control-custom {
+        border: 1px solid #ccc; 
+        background-color: white !important; 
+        color: #333; 
+    }
+    .form-control-custom:focus {
+        border-color: #666;
+        box-shadow: none; 
+        background-color: white;
+    }
+</style>

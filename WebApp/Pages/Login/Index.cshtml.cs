@@ -40,10 +40,8 @@ namespace WebApp.Pages
 
                 if (accessToken != null && refreshToken != null)
                 {
-                    Console.WriteLine("Access Token: " + accessToken);
-                    Console.WriteLine("Refresh Token: " + refreshToken);
-                    var script = $"<script>localStorage.setItem('accessToken', '{accessToken}'); localStorage.setItem('refreshToken', '{refreshToken}');</script>";
-                    HttpContext.Response.Headers.Append("X-LocalStorage-Script", script);
+                    HttpContext.Response.Cookies.Append("accessToken", accessToken);
+                    HttpContext.Response.Cookies.Append("refreshToken", refreshToken);
                 }
 
                 return RedirectToPage("/Index");
