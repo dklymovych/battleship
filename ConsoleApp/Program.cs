@@ -9,7 +9,6 @@ class Program
 {
     static async Task Main()
     {
-        // change this
         var connectionString = "Host=localhost;Username=username;Password=password;Database=battleshipdb";
         await using var dataSource = NpgsqlDataSource.Create(connectionString);
 

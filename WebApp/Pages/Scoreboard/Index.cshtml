@@ -1,0 +1,77 @@
+﻿@page
+@model WebApp.Pages.ScoreboardModel
+@{
+ViewData["Title"] = "Scoreboard";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .top-bar {
+            background-color: #333;
+            height: 30px;
+            width: 100%;
+        }
+        .sidebar {
+            background-color: #f0f0f0;
+            height: calc(100vh - 30px);
+            padding-top: 10px;
+        }
+        .sidebar button {
+            width: 100%;
+            margin: 10px 0;
+        }
+        .btn-active {
+            background-color: #000; 
+            color: white; 
+        }
+        .main-content {
+            background-color: white;
+            height: calc(100vh - 30px);
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="top-bar"></div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-4 sidebar">
+            <button class="btn @("RATING".Equals(ViewData["Title"]) ? "btn-active" : "btn-secondary")">RATING</button>
+            <button class="btn btn-secondary">JOIN GAME</button>
+            <button class="btn btn-secondary">CREATE GAME</button>
+            <button class="btn btn-secondary mt-auto">LOG OUT</button>
+        </div>
+        <div class="col-md-8 main-content">
+            <h1>SCOREBOARD</h1>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Win Rate (%)</th>
+                    <th>Number of Games</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model.Scoreboard.scoreboard)
+                {
+                <tr>
+                    <td>@item.username</td>
+                    <td>@item.winRate</td>
+                    <td>@item.numberOfGames</td>
+                </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
