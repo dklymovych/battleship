@@ -248,4 +248,25 @@ document.addEventListener("DOMContentLoaded", function() {
         }, {});
         console.log(JSON.stringify(orderedShipPosition, null, 2));
     });
+
+    function getOrderedShipPosition() {
+        return ["4", "3", "2", "1"].reduce((obj, key) => {
+            obj[key] = shipPosition[key];
+            return obj;
+        }, {});
+    }
+
+    document.getElementById("joinRoomBtn").addEventListener("click", function(event) {
+        event.preventDefault();
+        const orderedShipPosition = getOrderedShipPosition();
+        document.getElementById("shipPositions").value = JSON.stringify(orderedShipPosition);
+        event.target.form.submit();
+    });
+
+    document.getElementById("joinRandomRoomBtn").addEventListener("click", function(event) {
+        event.preventDefault();
+        const orderedShipPosition = getOrderedShipPosition();
+        document.getElementById("shipPositionsRandom").value = JSON.stringify(orderedShipPosition);
+        event.target.form.submit();
+    });
 });
