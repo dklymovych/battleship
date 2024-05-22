@@ -271,4 +271,5 @@ document.addEventListener("DOMContentLoaded", function() {
 
         event.target.form.submit();
     });
+    
 });
