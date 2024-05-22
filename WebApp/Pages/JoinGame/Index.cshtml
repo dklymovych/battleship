@@ -14,7 +14,6 @@
             font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 20px;
-            display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
@@ -30,7 +29,6 @@
             margin-bottom: 20px;
         }
         .container form {
-            display: flex;
             flex-direction: column;
         }
         .container input, .container button {
@@ -41,27 +39,112 @@
             font-size: 16px;
         }
         .container button {
-            background-color: #6200ea;
+            background-color: #eee;
+            border: 1px solid #111
             color: #fff;
             cursor: pointer;
             transition: background-color 0.3s;
         }
         .container button:hover {
-            background-color: #3700b3;
+            background-color: #ccc;
+        }
+
+        .joinSection {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+        }
+        .joinSection > div {
+            margin-right: 30px; /* Adjust spacing between elements */
+        }
+        .joinSection input {
+            margin-right: 10px; /* Adjust spacing between input and button */
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <div class="row">
+            <div class="col-md-6 text-center">
+                <h2 class="title">Your Table</h2>
+                <div id="grid" class="grid"></div>
+            </div>
+            <div class="col-md-4">
+                <h3 class="title">Ships</h3>
+                <div class="ships-container">
+                    <div class="ships-row" id="row4">
+                        <div class="ship" id="ship4-1" draggable="true" data-length="4">
+                            <div class="ship-segment"></div>
+                            <div class="ship-segment"></div>
+                            <div class="ship-segment"></div>
+                            <div class="ship-segment"></div>
+                        </div>
+                    </div>
+                    <div class="ships-row" id="row3">
+                        <div class="ship" id="ship3-1" draggable="true" data-length="3">
+                            <div class="ship-segment"></div>
+                            <div class="ship-segment"></div>
+                            <div class="ship-segment"></div>
+                        </div>
+                        <div class="ship" id="ship3-2" draggable="true" data-length="3">
+                            <div class="ship-segment"></div>
+                            <div class="ship-segment"></div>
+                            <div class="ship-segment"></div>
+                        </div>
+                    </div>
+                    <div class="ships-row" id="row2">
+                        <div class="ship" id="ship2-1" draggable="true" data-length="2">
+                            <div class="ship-segment"></div>
+                            <div class="ship-segment"></div>
+                        </div>
+                        <div class="ship" id="ship2-2" draggable="true" data-length="2">
+                            <div class="ship-segment"></div>
+                            <div class="ship-segment"></div>
+                        </div>
+                        <div class="ship" id="ship2-3" draggable="true" data-length="2">
+                            <div class="ship-segment"></div>
+                            <div class="ship-segment"></div>
+                        </div>
+                    </div>
+                    <div class="ships-row" id="row1">
+                        <div class="ship" id="ship1-1" draggable="true" data-length="1">
+                            <div class="ship-segment"></div>
+                        </div>
+                        <div class="ship" id="ship1-2" draggable="true" data-length="1">
+                            <div class="ship-segment"></div>
+                        </div>
+                        <div class="ship" id="ship1-3" draggable="true" data-length="1">
+                            <div class="ship-segment"></div>
+                        </div>
+                        <div class="ship" id="ship1-4" draggable="true" data-length="1">
+                            <div class="ship-segment"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="button-container">
+                    <button id="toggleMode" class="btn btn-secondary">Horizontal</button>
+                    <button id="clearGrid" class="btn btn-secondary">Clear Grid</button>
+                    <button id="randomizeGrid" class="btn btn-secondary">Randomize Grid</button>
+                </div>
+            </div>
+        </div>
+        <pre id="output"></pre>
+
         <h1>Join Game</h1>
-        <form method="post">
-            <label for="roomNumber">Enter Room Number</label>
-            <input type="text" id="roomNumber" name="RoomNumber" value="@Model.RoomNumber" />
-            <button type="submit">Join Room</button>
-        </form>
-        <form method="post" asp-page-handler="RandomRoom">
-            <button type="submit">Join Random Room</button>
-        </form>
+        <div class="joinSection">  
+            <div>
+                <form method="post">
+                    <label for="roomNumber">Enter Room Number</label>
+                    <input type="text" id="roomNumber" name="RoomNumber" value="@Model.RoomNumber" />
+                    <button type="submit">Join Room</button>
+                </form>
+            </div>
+            <div>
+                <form method="post" asp-page-handler="RandomRoom">
+                    <button type="submit">Join Random Room</button>
+                </form>
+            </div>
+        </div>
         @if (Model.Message != null)
         {
             <p>@Model.Message</p>
