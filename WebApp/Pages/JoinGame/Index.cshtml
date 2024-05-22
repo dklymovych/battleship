@@ -136,13 +136,13 @@
                 <form method="post" asp-page-handler="JoinRoom">
                     <label for="roomNumber">Enter Room Number</label>
                     <input type="text" id="roomNumber" name="RoomNumber" value="@Model.RoomNumber" />
-                    <input type="hidden" id="shipPositions" name="ShipPositions"  value="@Model.ShipPositions"/>
+                    <input type="hidden" id="shipPositions" name="ShipPositions" value="@Model.ShipPositions" />
                     <button type="submit" id="joinRoomBtn">Join Room</button>
                 </form>
             </div>
             <div>
                 <form method="post" asp-page-handler="RandomRoom">
-                    <input type="hidden" id="shipPositionsRandom" name="ShipPositions"  value="@Model.ShipPositions"/>
+                    <input type="hidden" id="shipPositionsRandom" name="ShipPositions" value="@Model.ShipPositions" />
                     <button type="submit" id="joinRandomRoomBtn">Join Random Room</button>
                 </form>
             </div>

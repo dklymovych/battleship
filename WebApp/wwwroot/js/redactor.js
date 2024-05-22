@@ -241,14 +241,6 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    document.getElementById("getPositions").addEventListener("click", function() {
-        const orderedShipPosition = ["4", "3", "2", "1"].reduce((obj, key) => {
-            obj[key] = shipPosition[key];
-            return obj;
-        }, {});
-        console.log(JSON.stringify(orderedShipPosition, null, 2));
-    });
-
     function getOrderedShipPosition() {
         return ["4", "3", "2", "1"].reduce((obj, key) => {
             obj[key] = shipPosition[key];
@@ -259,14 +251,24 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("joinRoomBtn").addEventListener("click", function(event) {
         event.preventDefault();
         const orderedShipPosition = getOrderedShipPosition();
-        document.getElementById("shipPositions").value = JSON.stringify(orderedShipPosition);
+
+        var shipJSON = JSON.stringify(orderedShipPosition);
+        console.log(shipJSON);
+    
+        document.getElementById("shipPositions").value = shipJSON;
+        
         event.target.form.submit();
     });
 
     document.getElementById("joinRandomRoomBtn").addEventListener("click", function(event) {
         event.preventDefault();
         const orderedShipPosition = getOrderedShipPosition();
-        document.getElementById("shipPositionsRandom").value = JSON.stringify(orderedShipPosition);
+
+        var shipJSON = JSON.stringify(orderedShipPosition);
+        console.log(shipJSON);
+
+        document.getElementById("shipPositionsRandom").value = shipJSON;
+
         event.target.form.submit();
     });
 });
