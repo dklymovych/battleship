@@ -1,5 +1,4 @@
-.idea/
 .vscode/
-.vs/
 bin/
 obj/
+compose.yaml

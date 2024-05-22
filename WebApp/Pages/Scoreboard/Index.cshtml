@@ -1,0 +1,59 @@
+﻿@page
+@model WebApp.Pages.ScoreboardModel
+@{
+    ViewData["Title"] = "Scoreboard";
+}
+
+
+<div class="top-bar"></div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 main-content">
+            <h1>SCOREBOARD</h1>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Win Rate (%)</th>
+                    <th>Number of Games</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model.Scoreboard.scoreboard)
+                {
+                <tr>
+                    <td>@item.username</td>
+                    <td>@item.winRate</td>
+                    <td>@item.numberOfGames</td>
+                </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+ <style>
+        .top-bar {
+            background-color: #333;
+            height: 30px;
+            width: 100%;
+        }
+        .sidebar {
+            background-color: #f0f0f0;
+            height: calc(100vh - 30px);
+            padding-top: 10px;
+        }
+        .sidebar button {
+            width: 100%;
+            margin: 10px 0;
+        }
+        .btn-active {
+            background-color: #000; 
+            color: white; 
+        }
+        .main-content {
+            background-color: white;
+            height: calc(100vh - 30px);
+            padding: 20px;
+        }
+    </style>

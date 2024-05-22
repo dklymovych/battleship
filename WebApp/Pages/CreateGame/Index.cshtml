@@ -1,0 +1,201 @@
+@page
+@model WebApp.Pages.CreateGameModel
+@{
+    ViewData["Title"] = "CreateGame page";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 text-center">
+            <h2 class="title">Your Table</h2>
+            <div id="grid" class="grid"></div>
+        </div>
+        <div class="col-md-4">
+            <h3 class="title">Ships</h3>
+            <div class="ships-container">
+                <div class="ships-row" id="row4">
+                    <div class="ship" id="ship4-1" draggable="true" data-length="4">
+                        <div class="ship-segment"></div>
+                        <div class="ship-segment"></div>
+                        <div class="ship-segment"></div>
+                        <div class="ship-segment"></div>
+                    </div>
+                </div>
+                <div class="ships-row" id="row3">
+                    <div class="ship" id="ship3-1" draggable="true" data-length="3">
+                        <div class="ship-segment"></div>
+                        <div class="ship-segment"></div>
+                        <div class="ship-segment"></div>
+                    </div>
+                    <div class="ship" id="ship3-2" draggable="true" data-length="3">
+                        <div class="ship-segment"></div>
+                        <div class="ship-segment"></div>
+                        <div class="ship-segment"></div>
+                    </div>
+                </div>
+                <div class="ships-row" id="row2">
+                    <div class="ship" id="ship2-1" draggable="true" data-length="2">
+                        <div class="ship-segment"></div>
+                        <div class="ship-segment"></div>
+                    </div>
+                    <div class="ship" id="ship2-2" draggable="true" data-length="2">
+                        <div class="ship-segment"></div>
+                        <div class="ship-segment"></div>
+                    </div>
+                    <div class="ship" id="ship2-3" draggable="true" data-length="2">
+                        <div class="ship-segment"></div>
+                        <div class="ship-segment"></div>
+                    </div>
+                </div>
+                <div class="ships-row" id="row1">
+                    <div class="ship" id="ship1-1" draggable="true" data-length="1">
+                        <div class="ship-segment"></div>
+                    </div>
+                    <div class="ship" id="ship1-2" draggable="true" data-length="1">
+                        <div class="ship-segment"></div>
+                    </div>
+                    <div class="ship" id="ship1-3" draggable="true" data-length="1">
+                        <div class="ship-segment"></div>
+                    </div>
+                    <div class="ship" id="ship1-4" draggable="true" data-length="1">
+                        <div class="ship-segment"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="button-container">
+                <button id="toggleMode" class="btn btn-secondary">Horizontal</button>
+                <button id="clearGrid" class="btn btn-secondary">Clear Grid</button>
+                <button id="randomizeGrid" class="btn btn-secondary">Randomize Grid</button>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-md-12">
+            <button id="toggleIsPublic" class="btn btn-secondary">Public</button>
+            <button id="createRoom" class="btn btn-primary">Create Room</button>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            let isPublic = true;
+            document.getElementById("toggleIsPublic").addEventListener("click", function() {
+                isPublic = !isPublic;
+                this.textContent = isPublic ? "Public" : "Private";
+            });
+
+            document.getElementById("createRoom").addEventListener("click", async function() {
+                const accessToken = getCookie("accessToken");
+                const shipsPosition = getShipPositions();
+                const createRoomDto = {
+                    isPublic: isPublic,
+                    shipsPosition: shipsPosition
+                };
+                console.log("Sending request with data:", createRoomDto);
+
+                const response = await fetch('/CreateGame?handler=CreateRoom', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`
+                    },
+                    body: JSON.stringify(createRoomDto)
+                });
+
+                console.log("Received response:", response);
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.success) {
+                        alert(`Room created successfully. Game Code: ${result.gameCode}`);
+                    } else {
+                        alert(`Failed to create room: ${result.message}`);
+                    }
+                } else {
+                    const errorText = await response.text();
+                    console.error("Error response text:", errorText);
+                    alert(`Failed to create room: ${response.statusText}`);
+                }
+            });
+
+            function getShipPositions() {
+                let shipPositions = {
+                    "4": [],
+                    "3": [],
+                    "2": [],
+                    "1": []
+                };
+
+                const visited = new Set();
+                const gridCells = Array.from(document.querySelectorAll('#grid div'));
+
+                gridCells.forEach(cell => {
+                    if (cell.style.backgroundColor === 'darkgray' && !visited.has(cell)) {
+                        const x = parseInt(cell.dataset.x);
+                        const y = parseInt(cell.dataset.y);
+
+                        const horizontalShip = collectShip(x, y, 'horizontal', visited);
+                        const verticalShip = collectShip(x, y, 'vertical', visited);
+
+                        if (horizontalShip.length > verticalShip.length) {
+                            if (!shipPositions[horizontalShip.length.toString()]) {
+                                shipPositions[horizontalShip.length.toString()] = [];
+                            }
+                            shipPositions[horizontalShip.length.toString()].push(horizontalShip.map(c => ({ x: c.x, y: c.y })));
+                            horizontalShip.forEach(c => visited.add(c.element));
+                        } else {
+                            if (!shipPositions[verticalShip.length.toString()]) {
+                                shipPositions[verticalShip.length.toString()] = [];
+                            }
+                            shipPositions[verticalShip.length.toString()].push(verticalShip.map(c => ({ x: c.x, y: c.y })));
+                            verticalShip.forEach(c => visited.add(c.element));
+                        }
+                    }
+                });
+
+                
+
+                return shipPositions;
+            }
+
+            function collectShip(startX, startY, direction, visited) {
+                let ship = [];
+
+                if (direction === 'horizontal') {
+                    for (let x = startX; x < 10; x++) {
+                        const cell = document.querySelector(`div[data-x="${x}"][data-y="${startY}"]`);
+                        if (cell && cell.style.backgroundColor === 'darkgray' && !visited.has(cell)) {
+                            ship.push({ x, y: startY, element: cell });
+                        } else {
+                            break;
+                        }
+                    }
+                } else if (direction === 'vertical') {
+                    for (let y = startY; y < 10; y++) {
+                        const cell = document.querySelector(`div[data-x="${startX}"][data-y="${y}"]`);
+                        if (cell && cell.style.backgroundColor === 'darkgray' && !visited.has(cell)) {
+                            ship.push({ x: startX, y, element: cell });
+                        } else {
+                            break;
+                        }
+                    }
+                }
+
+                return ship;
+            }
+
+            function getCookie(name) {
+                let cookieArr = document.cookie.split(";");
+                for(let i = 0; i < cookieArr.length; i++) {
+                    let cookiePair = cookieArr[i].split("=");
+                    if(name == cookiePair[0].trim()) {
+                        return decodeURIComponent(cookiePair[1]);
+                    }
+                }
+                return null;
+            }
+        });
+    </script>
+}
+
+
