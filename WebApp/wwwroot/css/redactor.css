@@ -1,0 +1,78 @@
+.container {
+  margin-top: 20px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(10, 40px);
+  grid-template-rows: repeat(10, 40px);
+  gap: 1px;
+}
+
+.grid div {
+  width: 40px;
+  height: 40px;
+  background-color: #D9D9D9;
+  border: 1px solid #F4F4F4;
+}
+
+.ships-container {
+  background-color: #d9d9d9;
+  border: 2px solid #000000;
+  padding: 10px;
+  border-radius: 5px;
+  height: 320px;
+}
+
+.ships-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.ship {
+  display: flex;
+  flex-direction: row;
+  background-color: #f4f4f4;
+  cursor: move;
+}
+
+.ship-segment {
+  width: 40px;
+  height: 40px;
+  background-color: #D9D9D9;
+  border: 1px solid #000000;
+  box-sizing: border-box;
+}
+
+.button-container {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.btn-secondary {
+  background-color: #F4F4F4;
+  color: #000000;
+  border: 1px solid #000000;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.btn-primary {
+  background-color: #404040;
+  color: #FFFFFF;
+  border: 1px solid #000000;
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.title {
+  font-weight: bold;
+  text-align: center;
+  color: #000000;
+}
