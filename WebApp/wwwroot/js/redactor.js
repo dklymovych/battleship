@@ -246,6 +246,8 @@ document.addEventListener("DOMContentLoaded", function() {
             obj[key] = shipPosition[key];
             return obj;
         }, {});
+        
         console.log(JSON.stringify(orderedShipPosition, null, 2));
     });
+    
 });
