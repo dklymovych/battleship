@@ -75,7 +75,7 @@ namespace WebApp.Pages
 
             if (result.StatusCode == System.Net.HttpStatusCode.OK || result.StatusCode == System.Net.HttpStatusCode.Created)
             {
-                return RedirectToPage("/Index");
+                return RedirectToPage("Login");
             }
             else
             {

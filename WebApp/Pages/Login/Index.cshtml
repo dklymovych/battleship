@@ -2,8 +2,64 @@
 @model WebApp.Pages.LoginModel
 @{
 ViewData["Title"] = "Login page";
-}
+var path = ViewContext.HttpContext.Request.Path;
 
+}
+<style>
+    .nav-tabs-custom {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #d9d9d9;
+        border-radius: 30px;
+        padding: 5px;
+    }
+    .nav-tabs-custom .nav-link {
+        color: white;
+        font-weight: bold;
+        text-align: center;
+        border: none;
+        padding: 10px 20px;
+        margin: 0 5px;
+        border-radius: 30px;
+    }
+    .nav-tabs-custom .nav-link.active {
+        background-color: white;
+        color: #404040;
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="nav nav-tabs-custom mb-4">
+                <a class="nav-link @(path == "/Registration" ? "active" : "")" href="/Registration">Sign Up</a>
+                <a class="nav-link @(path == "/Login" ? "active" : "")" href="/Login">Log In</a>
+            </div>
+            <div class="card mt-3">
+                <div class="card-body">
+                    <form method="post">
+                        <div class="form-group mb-3">
+                            <label for="username">Username</label>
+                            <input type="text" class="form-control" id="username" name="Username" value="@Model.Username" />
+                            <span class="text-danger">@Model.UsernameError</span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="password">Password</label>
+                            <input type="password" class="form-control" id="password" name="Password" value="@Model.Password" />
+                            <span class="text-danger">@Model.PasswordError</span>
+                        </div>
+                        <div class="text-danger mb-3">@Model.FormError</div>
+                        <button type="submit" class="btn btn-primary w-100">Login</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@* 
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-4">
@@ -62,4 +118,4 @@ ViewData["Title"] = "Login page";
         box-shadow: none; 
         background-color: white;
     }
-</style>
+</style> *@
